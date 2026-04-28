@@ -80,19 +80,21 @@
     .pill.cta { background: var(--navy); color: var(--cream-on-navy); border-color: var(--navy); }
 
     .rank-grid {
-      border-top: 1px solid var(--line);
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0 48px;
     }
+    .rank-col { border-top: 1px solid var(--line); }
     .rank-head {
-      display: grid; grid-template-columns: 56px 1fr 120px 120px;
-      column-gap: 16px;
+      display: grid; grid-template-columns: 32px 1fr 80px 80px;
+      column-gap: 20px;
       padding: 12px 4px; font-size: 10px; font-weight: 600;
       text-transform: uppercase; letter-spacing: 0.08em;
       color: var(--ink-3); border-bottom: 1px solid var(--line);
     }
     .rank-row {
-      display: grid; grid-template-columns: 56px 1fr 120px 120px;
-      column-gap: 16px;
-      align-items: center; padding: 14px 4px;
+      display: grid; grid-template-columns: 32px 1fr 80px 80px;
+      column-gap: 20px;
+      align-items: center; padding: 12px 4px;
       border-bottom: 1px solid var(--line-2);
       font-size: 13px; transition: background .15s;
       cursor: pointer; text-decoration: none; color: inherit;
@@ -234,7 +236,8 @@
       .recent-row > :nth-child(n+7) { display: none; }
     }
     @media (max-width: 860px) {
-      .rank-head, .rank-row { grid-template-columns: 40px 1fr 70px 90px; column-gap: 12px; }
+      .rank-grid { grid-template-columns: 1fr; gap: 0; }
+      .rank-head, .rank-row { grid-template-columns: 32px 1fr 70px 90px; column-gap: 16px; }
       .updates-row { grid-template-columns: 1fr; }
       .news-grid { grid-template-columns: 1fr; }
       .recent-row { grid-template-columns: repeat(4, 1fr); }
@@ -312,20 +315,26 @@
     </div>
 
     <div class="rank-grid">
-      <div class="rank-head">
-        <span>Rank</span><span>Title</span><span style="text-align:right;">Chapters</span><span style="text-align:right;">Reads</span>
+      <div class="rank-col">
+        <div class="rank-head">
+          <span>Rank</span><span>Title</span><span style="text-align:right;">Chapters</span><span style="text-align:right;">Reads</span>
+        </div>
+        <a class="rank-row" href="series.html?id=berserk"><span class="num">1</span><div class="rank-title"><div class="rank-cover cv5">B</div><div class="rank-meta"><div class="t">Berserk</div><div class="jp">ベルセルク</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=jojo"><span class="num">2</span><div class="rank-title"><div class="rank-cover cv1">J</div><div class="rank-meta"><div class="t">JoJo no Kimyou na Bouken Part 7: Steel Ball Run</div><div class="jp">ジョジョの奇妙な冒険 Part7 STEEL BALL RUN</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=vagabond"><span class="num">3</span><div class="rank-title"><div class="rank-cover cv6">V</div><div class="rank-meta"><div class="t">Vagabond</div><div class="jp">バガボンド</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=onepiece"><span class="num">4</span><div class="rank-title"><div class="rank-cover cv4">O</div><div class="rank-meta"><div class="t">One Piece</div><div class="jp">ONE PIECE</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=monster"><span class="num">5</span><div class="rank-title"><div class="rank-cover cv9">M</div><div class="rank-meta"><div class="t">Monster</div><div class="jp">MONSTER</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
       </div>
-
-      <a class="rank-row" href="series.html?id=berserk"><span class="num">1</span><div class="rank-title"><div class="rank-cover cv5">B</div><div class="rank-meta"><div class="t">Berserk</div><div class="jp">ベルセルク</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=jojo"><span class="num">2</span><div class="rank-title"><div class="rank-cover cv1">J</div><div class="rank-meta"><div class="t">JoJo no Kimyou na Bouken Part 7: Steel Ball Run</div><div class="jp">ジョジョの奇妙な冒険 Part7 STEEL BALL RUN</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=vagabond"><span class="num">3</span><div class="rank-title"><div class="rank-cover cv6">V</div><div class="rank-meta"><div class="t">Vagabond</div><div class="jp">バガボンド</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=onepiece"><span class="num">4</span><div class="rank-title"><div class="rank-cover cv4">O</div><div class="rank-meta"><div class="t">One Piece</div><div class="jp">ONE PIECE</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=monster"><span class="num">5</span><div class="rank-title"><div class="rank-cover cv9">M</div><div class="rank-meta"><div class="t">Monster</div><div class="jp">MONSTER</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=slamdunk"><span class="num">6</span><div class="rank-title"><div class="rank-cover cv8">S</div><div class="rank-meta"><div class="t">Slam Dunk</div><div class="jp">SLAM DUNK</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=vinland"><span class="num">7</span><div class="rank-title"><div class="rank-cover cv7">V</div><div class="rank-meta"><div class="t">Vinland Saga</div><div class="jp">ヴィンランド・サガ</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=fma"><span class="num">8</span><div class="rank-title"><div class="rank-cover cv2">F</div><div class="rank-meta"><div class="t">Fullmetal Alchemist</div><div class="jp">鋼の錬金術師</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=grandblue"><span class="num">9</span><div class="rank-title"><div class="rank-cover cv3">G</div><div class="rank-meta"><div class="t">Grand Blue</div><div class="jp">ぐらんぶる</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
-      <a class="rank-row" href="series.html?id=kingdom"><span class="num">10</span><div class="rank-title"><div class="rank-cover cv10">K</div><div class="rank-meta"><div class="t">Kingdom</div><div class="jp">キングダム</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
+      <div class="rank-col">
+        <div class="rank-head">
+          <span>Rank</span><span>Title</span><span style="text-align:right;">Chapters</span><span style="text-align:right;">Reads</span>
+        </div>
+        <a class="rank-row" href="series.html?id=slamdunk"><span class="num">6</span><div class="rank-title"><div class="rank-cover cv8">S</div><div class="rank-meta"><div class="t">Slam Dunk</div><div class="jp">SLAM DUNK</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=vinland"><span class="num">7</span><div class="rank-title"><div class="rank-cover cv7">V</div><div class="rank-meta"><div class="t">Vinland Saga</div><div class="jp">ヴィンランド・サガ</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=fma"><span class="num">8</span><div class="rank-title"><div class="rank-cover cv2">F</div><div class="rank-meta"><div class="t">Fullmetal Alchemist</div><div class="jp">鋼の錬金術師</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=grandblue"><span class="num">9</span><div class="rank-title"><div class="rank-cover cv3">G</div><div class="rank-meta"><div class="t">Grand Blue</div><div class="jp">ぐらんぶる</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
+        <a class="rank-row" href="series.html?id=kingdom"><span class="num">10</span><div class="rank-title"><div class="rank-cover cv10">K</div><div class="rank-meta"><div class="t">Kingdom</div><div class="jp">キングダム</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
+      </div>
     </div>
   </section>
 
