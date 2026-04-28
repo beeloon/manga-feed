@@ -16,6 +16,33 @@
 <body>
   <div id="root"></div>
 
+  <style>
+    .review-bar {
+      position: fixed;
+      bottom: 18px; right: 18px;
+      z-index: 9999;
+      background: #0e1a36;
+      color: #e8dec4;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      font-family: 'Inter Tight', system-ui, sans-serif;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+      display: flex; gap: 10px; align-items: center;
+    }
+    .review-bar a {
+      color: #c14a2a;
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .review-bar a:hover { color: #e8dec4; }
+  </style>
+  <div class="review-bar">
+    <span>Folio — design 01 · reading library</span>
+    <a href="../">← back to review</a>
+  </div>
+
   <script type="text/babel" src="data.jsx"></script>
   <script type="text/babel" src="cover.jsx"></script>
   <script type="text/babel" src="browse-updates.jsx"></script>
