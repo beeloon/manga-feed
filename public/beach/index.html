@@ -19,14 +19,24 @@
     .hero-art {
       position: absolute;
       right: -40px; top: 0;
-      width: 62%;
+      width: 78%;
       height: 100%;
-      background:
-        radial-gradient(ellipse at 70% 40%, rgba(26,29,43,0.12), transparent 60%),
-        linear-gradient(120deg, transparent 30%, rgba(26,29,43,0.06) 100%);
-      mask-image: linear-gradient(90deg, transparent, #000 18%, #000);
+      background-image: url("vagabond-hero.jpg");
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
+      mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 14%, #000 30%, #000 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.5) 14%, #000 30%, #000 100%);
+      mix-blend-mode: multiply;
+      opacity: 0.95;
     }
-    .hero-art svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.85; }
+    /* a soft vertical fade on top + bottom so hero blends into surrounding bg */
+    .hero-art::after {
+      content: "";
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, rgba(245,239,225,0.4) 0%, transparent 18%, transparent 80%, rgba(245,239,225,0.5) 100%);
+      pointer-events: none;
+    }
     .hero-inner { position: relative; max-width: 580px; padding-top: 24px; }
     .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
     .hero-desc {
@@ -259,46 +269,7 @@
 
   <!-- HERO -->
   <section class="hero container">
-    <div class="hero-art" aria-hidden="true">
-      <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
-        <line x1="0" y1="340" x2="800" y2="340" stroke="rgba(26,29,43,0.15)" stroke-width="0.5"/>
-        <g fill="rgba(26,29,43,0.7)">
-          <path d="M120 80 q8 -8 16 0 q8 -8 16 0 q-8 4 -16 4 q-8 0 -16 -4z"/>
-          <path d="M200 130 q10 -10 20 0 q10 -10 20 0 q-10 5 -20 5 q-10 0 -20 -5z"/>
-          <path d="M340 60 q6 -6 12 0 q6 -6 12 0 q-6 3 -12 3 q-6 0 -12 -3z"/>
-          <path d="M450 100 q9 -9 18 0 q9 -9 18 0 q-9 4 -18 4 q-9 0 -18 -4z"/>
-          <path d="M580 50 q7 -7 14 0 q7 -7 14 0 q-7 3 -14 3 q-7 0 -14 -3z"/>
-          <path d="M680 130 q12 -12 24 0 q12 -12 24 0 q-12 6 -24 6 q-12 0 -24 -6z"/>
-          <path d="M150 200 q5 -5 10 0 q5 -5 10 0 q-5 2 -10 2 q-5 0 -10 -2z"/>
-          <path d="M720 220 q9 -9 18 0 q9 -9 18 0 q-9 4 -18 4 q-9 0 -18 -4z"/>
-          <path d="M540 180 q8 -8 16 0 q8 -8 16 0 q-8 4 -16 4 q-8 0 -16 -4z"/>
-        </g>
-        <g fill="rgba(26,29,43,0.85)" transform="translate(560,220)">
-          <path d="M0 30 q-30 -40 -50 -20 q-15 15 0 30 q15 15 40 0 q-10 5 -20 5 l60 0 q30 5 50 -10 q15 -10 0 -20 q-15 -10 -40 0 q10 -10 30 -10 q-30 -10 -70 25z"/>
-        </g>
-        <g fill="rgba(26,29,43,0.6)" transform="translate(380,210)">
-          <ellipse cx="0" cy="0" rx="14" ry="20"/>
-          <rect x="-12" y="18" width="24" height="80" rx="4"/>
-          <rect x="-30" y="40" width="14" height="50" rx="3"/>
-          <rect x="16" y="40" width="14" height="50" rx="3"/>
-          <rect x="-10" y="95" width="8" height="40"/>
-          <rect x="2" y="95" width="8" height="40"/>
-          <line x1="32" y1="20" x2="80" y2="-30" stroke="rgba(26,29,43,0.7)" stroke-width="2"/>
-        </g>
-        <path d="M0 360 Q200 340 400 365 T800 360 L800 500 L0 500 Z" fill="rgba(26,29,43,0.18)"/>
-        <path d="M0 400 Q150 385 300 405 T600 400 T800 405 L800 500 L0 500 Z" fill="rgba(26,29,43,0.28)"/>
-        <g fill="rgba(26,29,43,0.55)">
-          <ellipse cx="80" cy="380" rx="22" ry="5"/>
-          <ellipse cx="180" cy="395" rx="28" ry="6"/>
-          <ellipse cx="280" cy="385" rx="20" ry="5"/>
-          <ellipse cx="500" cy="400" rx="30" ry="6"/>
-          <ellipse cx="640" cy="392" rx="26" ry="5"/>
-          <ellipse cx="160" cy="420" rx="32" ry="6"/>
-          <ellipse cx="380" cy="425" rx="28" ry="6"/>
-          <ellipse cx="600" cy="430" rx="34" ry="7"/>
-        </g>
-      </svg>
-    </div>
+    <div class="hero-art" aria-hidden="true"></div>
 
     <div class="hero-inner">
       <p class="eyebrow">Trending Now</p>
