@@ -48,6 +48,48 @@
   --selected: rgba(47,111,235,0.07);
 }
 
+/* Light-mode overrides for components whose defaults are dark-tuned */
+[data-theme="light"] .cover { border-color: var(--line); }
+[data-theme="light"] .cover[data-tone="blue"]   { background: linear-gradient(160deg,#dbe6f7 0%,#b9cce8 100%); }
+[data-theme="light"] .cover[data-tone="green"]  { background: linear-gradient(160deg,#dde9e1 0%,#bcd2c4 100%); }
+[data-theme="light"] .cover[data-tone="amber"]  { background: linear-gradient(160deg,#f1e6ce 0%,#dccca6 100%); }
+[data-theme="light"] .cover[data-tone="purple"] { background: linear-gradient(160deg,#e3dbef 0%,#c5b9da 100%); }
+[data-theme="light"] .cover[data-tone="rust"]   { background: linear-gradient(160deg,#efd9d2 0%,#d6b3a6 100%); }
+[data-theme="light"] .cover[data-tone="slate"]  { background: linear-gradient(160deg,#dde2eb 0%,#c2cad6 100%); }
+[data-theme="light"] .cover .mono-bg { color: rgba(26,29,35,0.78); }
+[data-theme="light"] .cover .spine   { color: rgba(26,29,35,0.45); }
+[data-theme="light"] .cover .meta    { color: rgba(26,29,35,0.55); }
+
+[data-theme="light"] .panel-img {
+  background:
+    radial-gradient(ellipse at 50% 30%, rgba(255,255,255,0.6), transparent 60%),
+    linear-gradient(180deg, #f1f3f8 0%, #d9dde5 100%);
+  border-color: var(--line);
+}
+[data-theme="light"] .panel-img .bubble {
+  background: #fff; color: #1a1d23;
+  box-shadow: 0 6px 14px rgba(20,30,50,0.10);
+}
+[data-theme="light"] .panel-img .label { color: rgba(26,29,35,0.4); }
+
+[data-theme="light"] .editorial-art {
+  background: linear-gradient(180deg, #e6ebf5 0%, #c8d3e6 60%, #aebed8 100%);
+}
+[data-theme="light"] .editorial-art::after {
+  background:
+    radial-gradient(ellipse at 30% 60%, rgba(245,199,110,0.30), transparent 50%),
+    radial-gradient(ellipse at 70% 40%, rgba(47,111,235,0.18), transparent 60%);
+}
+
+[data-theme="light"] body::before { opacity: 0.012; }
+[data-theme="light"] .review-bar {
+  background: #1a2540; color: #cfe1ff;
+  border-color: #2a3760;
+}
+[data-theme="light"] .btn.primary { color: #fff; }
+[data-theme="light"] .seg button.active { color: #fff; }
+[data-theme="light"] .pager .pages button.active { color: #fff; }
+
 * { box-sizing: border-box; }
 html, body {
   margin: 0; padding: 0; height: 100%;

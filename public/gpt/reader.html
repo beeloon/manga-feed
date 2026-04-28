@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    body { background: #0a0c11; }
+    [data-theme="dark"] body { background: #0a0c11; }
     [data-theme="dark"] .panel-img {
       background:
         radial-gradient(ellipse at 50% 30%, rgba(120,140,180,0.18), transparent 60%),
@@ -104,8 +104,8 @@
         <div class="field">
           <label>Theme</label>
           <div class="seg" id="theme-seg">
-            <button data-theme="light">☀</button>
-            <button class="active" data-theme="dark">☾</button>
+            <button class="active" data-theme="light">☀</button>
+            <button data-theme="dark">☾</button>
             <button data-theme="auto">A</button>
           </div>
         </div>
