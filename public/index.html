@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manga Feed — design review</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f3ead9;
+      --bg-2: #ebe1cd;
+      --text: #2a2622;
+      --text-2: #6b5e51;
+      --accent: #b35a3a;
+      --line: rgba(42,38,34,0.12);
+      --serif: 'Newsreader', Georgia, serif;
+      --sans: 'Inter Tight', system-ui, sans-serif;
+      --mono: 'JetBrains Mono', ui-monospace, monospace;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; min-height: 100%; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-feature-settings: "ss01", "cv11";
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    main {
+      max-width: 880px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 96px 32px 64px;
+      flex: 1;
+    }
+    .eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-2);
+      margin: 0 0 24px;
+    }
+    h1 {
+      font-family: var(--serif);
+      font-weight: 400;
+      font-size: clamp(40px, 6vw, 64px);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin: 0 0 16px;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+    .lede {
+      font-family: var(--serif);
+      font-size: 19px;
+      line-height: 1.55;
+      color: var(--text-2);
+      max-width: 56ch;
+      margin: 0 0 64px;
+    }
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 720px) {
+      .cards { grid-template-columns: 1fr; }
+      main { padding: 56px 24px 48px; }
+    }
+    a.card {
+      display: block;
+      padding: 32px 28px 28px;
+      background: var(--bg-2);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    a.card:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent);
+      background: #efe4cd;
+    }
+    a.card .num {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.16em;
+      color: var(--accent);
+      margin-bottom: 18px;
+      display: block;
+    }
+    a.card h2 {
+      font-family: var(--serif);
+      font-size: 28px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      margin: 0 0 8px;
+    }
+    a.card .sub {
+      font-family: var(--serif);
+      font-style: italic;
+      color: var(--text-2);
+      margin: 0 0 24px;
+    }
+    a.card p {
+      font-size: 14px;
+      line-height: 1.55;
+      color: var(--text-2);
+      margin: 0 0 24px;
+    }
+    a.card .arrow {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--accent);
+      letter-spacing: 0.06em;
+    }
+    .note {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">MVP · 2026-04-28</p>
+    <h1>Manga Feed — <em>two design directions</em></h1>
+    <p class="lede">Pick a design to review. Each is a self-contained prototype with a Tweaks panel for toggling theme, layout, and other variables. Use them to decide what to invest in next.</p>
+
+    <div class="cards">
+      <a class="card" href="folio/">
+        <span class="num">01 / Folio</span>
+        <h2>Folio</h2>
+        <p class="sub">a reading library</p>
+        <p>Editorial, calm, warm. Discovery-first home with sparse covers; reader supports single, double, or vertical layouts with auto-hide or persistent chrome.</p>
+        <span class="arrow">Open Folio →</span>
+      </a>
+
+      <a class="card" href="riso/">
+        <span class="num">02 / Riso/Read</span>
+        <h2>Riso/Read</h2>
+        <p class="sub">risograph zine</p>
+        <p>Print-shop posture. Mono type, halftone dots, ink-block tones. A more unexpected take — same content, different temperament.</p>
+        <span class="arrow">Open Riso/Read →</span>
+      </a>
+    </div>
+
+    <p class="note">
+      Each route is the designer's HTML/CSS/JS prototype served as-is. Babel runs in the browser, React from unpkg. First load may take a second. Refresh resets the Tweaks state — that's expected.
+    </p>
+  </main>
+</body>
+</html>

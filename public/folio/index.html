@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-accent="terracotta">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Folio — a reading library</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,300;1,6..72,400;1,6..72,500;1,6..72,600&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Work+Sans:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Space+Grotesk:wght@400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="data.jsx"></script>
+  <script type="text/babel" src="cover.jsx"></script>
+  <script type="text/babel" src="browse-updates.jsx"></script>
+  <script type="text/babel" src="home.jsx"></script>
+  <script type="text/babel" src="reader.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+      "theme": "light",
+      "accent": "terracotta",
+      "layout": "single",
+      "fontPair": "lora-work",
+      "chromeMode": "auto"
+    }/*EDITMODE-END*/;
+
+    const FONT_PAIRS = {
+      "newsreader-inter": { serif: "'Newsreader', Georgia, serif", sans: "'Inter Tight', system-ui, sans-serif" },
+      "lora-work":        { serif: "'Lora', Georgia, serif",       sans: "'Work Sans', system-ui, sans-serif" },
+      "spectral-grotesk": { serif: "'Spectral', Georgia, serif",   sans: "'Space Grotesk', system-ui, sans-serif" },
+      "playfair-dmsans":  { serif: "'Playfair Display', Georgia, serif", sans: "'DM Sans', system-ui, sans-serif" },
+    };
+
+    function App() {
+      const [view, setView] = useState({ name: "library" });
+      const [tweaks, setTweak] = window.useTweaks(TWEAK_DEFAULTS);
+
+      // Apply theme + accent + fonts to <html>
+      useEffect(() => {
+        document.documentElement.dataset.theme = tweaks.theme;
+        document.documentElement.dataset.accent = tweaks.accent;
+        const pair = FONT_PAIRS[tweaks.fontPair] || FONT_PAIRS["lora-work"];
+        document.documentElement.style.setProperty('--font-serif', pair.serif);
+        document.documentElement.style.setProperty('--font-sans', pair.sans);
+      }, [tweaks.theme, tweaks.accent, tweaks.fontPair]);
+
+      const openManga = (id) => setView({ name: "reader", id });
+      const goHome = () => setView({ name: "library" });
+      const navigate = (page) => setView({ name: page });
+
+      return (
+        <>
+          {view.name === "library" && <HomeScreen onOpenManga={openManga} onNavigate={navigate} />}
+          {view.name === "browse" && <window.BrowseScreen onOpenManga={openManga} onNavigate={navigate} />}
+          {view.name === "updates" && <window.UpdatesScreen onOpenManga={openManga} onNavigate={navigate} />}
+          {view.name === "notes" && <window.UpdatesScreen onOpenManga={openManga} onNavigate={navigate} />}
+          {view.name === "reader" && (
+            <Reader
+              key={view.id + tweaks.layout}
+              mangaId={view.id}
+              onBack={goHome}
+              layout={tweaks.layout}
+              chromeMode={tweaks.chromeMode}
+            />
+          )}
+
+          <window.TweaksPanel title="Tweaks">
+            <window.TweakSection title="Appearance">
+              <window.TweakRadio
+                label="Theme"
+                value={tweaks.theme}
+                onChange={(v) => setTweak("theme", v)}
+                options={[
+                  { value: "dark", label: "Dark" },
+                  { value: "light", label: "Light" },
+                ]}
+              />
+              <window.TweakRadio
+                label="Accent warmth"
+                value={tweaks.accent}
+                onChange={(v) => setTweak("accent", v)}
+                options={[
+                  { value: "terracotta", label: "Terracotta" },
+                  { value: "amber", label: "Amber" },
+                  { value: "sand", label: "Sand" },
+                  { value: "none", label: "None" },
+                ]}
+              />
+            </window.TweakSection>
+
+            <window.TweakSection title="Reader">
+              <window.TweakRadio
+                label="Layout"
+                value={tweaks.layout}
+                onChange={(v) => setTweak("layout", v)}
+                options={[
+                  { value: "single", label: "Single" },
+                  { value: "double", label: "Double" },
+                  { value: "vertical", label: "Vertical" },
+                ]}
+              />
+              <window.TweakRadio
+                label="Chrome"
+                value={tweaks.chromeMode}
+                onChange={(v) => setTweak("chromeMode", v)}
+                options={[
+                  { value: "auto", label: "Auto-hide" },
+                  { value: "persistent", label: "Persistent" },
+                ]}
+              />
+            </window.TweakSection>
+
+            <window.TweakSection title="Typography">
+              <window.TweakSelect
+                label="Font pairing"
+                value={tweaks.fontPair}
+                onChange={(v) => setTweak("fontPair", v)}
+                options={[
+                  { value: "newsreader-inter", label: "Newsreader · Inter Tight" },
+                  { value: "lora-work", label: "Lora · Work Sans" },
+                  { value: "spectral-grotesk", label: "Spectral · Space Grotesk" },
+                  { value: "playfair-dmsans", label: "Playfair · DM Sans" },
+                ]}
+              />
+            </window.TweakSection>
+
+            <window.TweakSection title="Try it">
+              {view.name === "home" ? (
+                <window.TweakButton label="Open reader →" onClick={() => openManga("still-water")} />
+              ) : view.name === "reader" ? (
+                <window.TweakButton label="Back to library →" onClick={goHome} />
+              ) : (
+                <window.TweakButton label="Back to library →" onClick={goHome} />
+              )}
+            </window.TweakSection>
+          </window.TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

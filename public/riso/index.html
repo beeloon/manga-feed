@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Riso/Read — risograph zine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="manga-feed/styles.css" />
+  <style>
+    html, body { margin: 0; padding: 0; height: 100%; }
+    body { font-family: 'JetBrains Mono', ui-monospace, monospace; background: #f3ead9; }
+    /* App scaffolding for the standalone Riso/Read flow */
+    .rz2-app {
+      max-width: 1280px;
+      margin: 0 auto;
+      min-height: 100vh;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 30px 80px -30px rgba(0,0,0,0.25);
+    }
+  </style>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel" src="manga-feed/data.jsx"></script>
+  <script type="text/babel" src="manga-feed/cover.jsx"></script>
+  <script type="text/babel" src="manga-feed/riso.jsx"></script>
+  <script type="text/babel" src="tweaks-panel.jsx"></script>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    const RZ_TWEAKS = /*EDITMODE-BEGIN*/{
+      "theme": "light",
+      "startView": "home"
+    }/*EDITMODE-END*/;
+
+    function App() {
+      const [tweaks, setTweak] = window.useTweaks(RZ_TWEAKS);
+      const [view, setView] = useState({ name: tweaks.startView || "home", id: "the-glassblower" });
+
+      useEffect(() => {
+        // inject riso styles once
+        if (document.getElementById('rz-styles')) return;
+        const s = document.createElement('style');
+        s.id = 'rz-styles';
+        s.textContent = window.RZ2_STYLE;
+        document.head.appendChild(s);
+      }, []);
+
+      const open = (kind, id) => setView({ name: "reader", id });
+      const nav  = (kind, name, id) => setView({ name, id: id || view.id });
+      const back = () => setView({ name: "home" });
+
+      const dataAttrs = tweaks.theme === "dark" ? { "data-dark": "true" } : {};
+
+      return (
+        <>
+          <div className="rz2-app" {...dataAttrs}>
+            {view.name === "home"   && <window.Rz2Home   onOpenManga={open} onNavigate={nav} />}
+            {view.name === "series" && <window.Rz2Series id={view.id} onOpenManga={open} onNavigate={nav} />}
+            {view.name === "reader" && <window.Rz2Reader id={view.id} onBack={back} onNavigate={nav} />}
+          </div>
+
+          <window.TweaksPanel title="Tweaks">
+            <window.TweakSection title="Riso/Read">
+              <window.TweakRadio
+                label="Theme"
+                value={tweaks.theme}
+                onChange={(v) => setTweak("theme", v)}
+                options={[
+                  { value: "light", label: "Light" },
+                  { value: "dark", label: "Dark" },
+                ]}
+              />
+              <window.TweakRadio
+                label="Jump to"
+                value={view.name}
+                onChange={(v) => setView({ name: v, id: view.id })}
+                options={[
+                  { value: "home",   label: "Front" },
+                  { value: "series", label: "Stack" },
+                  { value: "reader", label: "Reader" },
+                ]}
+              />
+            </window.TweakSection>
+            <window.TweakSection title="Open a series">
+              <div style={{display:'grid', gap:6}}>
+                {window.MANGA_CATALOG.slice(0,6).map(m => (
+                  <window.TweakButton
+                    key={m.id}
+                    label={`→ ${m.title}`}
+                    onClick={() => setView({ name: "series", id: m.id })}
+                  />
+                ))}
+              </div>
+            </window.TweakSection>
+          </window.TweaksPanel>
+        </>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

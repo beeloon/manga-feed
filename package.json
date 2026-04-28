@@ -1,0 +1,14 @@
+{
+  "name": "manga-feed-mvp",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Static-serve harness for Folio + Riso/Read prototype review",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

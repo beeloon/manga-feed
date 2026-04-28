@@ -1,0 +1,91 @@
+/* Manga Feed — shared base styles for all four directions.
+   Each direction (.kn, .tp, .hy, .bp) scopes its own type, color, density. */
+
+* { box-sizing: border-box; }
+
+/* ─────────────────────────────────────────
+   Striped placeholder cover system.
+   Used in place of hand-drawn manga art. Each cover renders a tinted card
+   with horizontal striations + the title set in monospace at small size,
+   so a single artboard reads as "this is a placeholder for cover art".
+   ───────────────────────────────────────── */
+.cv {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+  background: var(--cv-bg, #2a2218);
+  color: var(--cv-fg, #d4c4a0);
+  border-radius: 2px;
+  isolation: isolate;
+}
+.cv::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    rgba(255,255,255,0.04) 0 1px,
+    transparent 1px 7px
+  );
+  z-index: 0; pointer-events: none;
+}
+.cv::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: radial-gradient(
+    ellipse at 30% 20%,
+    rgba(255,255,255,0.08), transparent 60%
+  );
+  z-index: 0; pointer-events: none;
+}
+.cv-meta {
+  position: relative; z-index: 1;
+  padding: 10px 11px 0;
+  font: 500 8.5px/1.3 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--cv-fg, #d4c4a0);
+  opacity: 0.75;
+}
+.cv-title {
+  position: relative; z-index: 1;
+  padding: 0 11px 11px;
+  font: 600 13px/1.15 'JetBrains Mono', ui-monospace, monospace;
+  letter-spacing: -0.005em;
+  color: var(--cv-fg, #d4c4a0);
+  word-break: break-word;
+}
+.cv-stripe {
+  position: relative; z-index: 1;
+  height: 4px;
+  margin: 0 11px 8px;
+  background: var(--cv-accent, #c9956b);
+  opacity: 0.6;
+}
+
+/* Sizes */
+.cv.sm { width: 88px; aspect-ratio: 2/3; }
+.cv.md { width: 140px; aspect-ratio: 2/3; }
+.cv.lg { width: 200px; aspect-ratio: 2/3; }
+.cv.xl { width: 260px; aspect-ratio: 2/3; }
+.cv.wide { aspect-ratio: 4/3; }
+.cv.poster { aspect-ratio: 16/9; }
+.cv.full { width: 100%; height: 100%; aspect-ratio: auto; border-radius: 0; }
+
+.cv.full .cv-meta { padding-top: 16px; padding-left: 16px; }
+.cv.full .cv-title { font-size: 16px; padding: 0 16px 16px; }
+
+/* Smaller covers strip the meta + stripe to keep them readable */
+.cv.sm .cv-meta { font-size: 7px; padding: 6px 7px 0; }
+.cv.sm .cv-title { font-size: 10px; padding: 0 7px 7px; }
+.cv.sm .cv-stripe { display: none; }
+
+/* Reset buttons we use as cards */
+.btn-reset {
+  appearance: none; border: 0; background: none; padding: 0;
+  font: inherit; color: inherit; cursor: pointer; text-align: left;
+}
+
+/* Generic util */
+.sr { position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0); }
