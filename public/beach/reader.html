@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vagabond · Ch. 1 — beachRead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* reader uses a deeper, focused canvas — paper on slate */
+    body {
+      background: #1c2238;
+      color: var(--cream-on-navy);
+    }
+    body::before { display: none; } /* drop the cream-paper texture */
+
+    .reader-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP CHROME */
+    .reader-top {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(14,26,54,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(232,222,196,0.08);
+    }
+    .reader-top-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 12px 32px;
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
+      gap: 20px;
+    }
+    .reader-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--cream-on-navy);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .reader-back:hover { color: var(--accent); }
+    .reader-back .ico {
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      border: 1px solid rgba(232,222,196,0.2);
+      display: grid; place-items: center;
+      transition: border .15s, background .15s;
+    }
+    .reader-back:hover .ico {
+      border-color: var(--accent);
+      background: rgba(193,74,42,0.15);
+    }
+    .reader-titlebar {
+      text-align: center;
+      min-width: 0;
+    }
+    .reader-title {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 16px;
+      letter-spacing: -0.005em;
+      color: #fff;
+      line-height: 1.1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .reader-sub {
+      font-size: 11px;
+      color: rgba(232,222,196,0.6);
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+    }
+    .reader-sub .accent { color: var(--accent); font-weight: 500; }
+    .reader-tools {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      align-items: center;
+    }
+    .tool {
+      width: 32px; height: 32px;
+      border-radius: 6px;
+      display: grid; place-items: center;
+      color: rgba(232,222,196,0.85);
+      cursor: pointer;
+      transition: background .15s, color .15s;
+      font-size: 14px;
+      border: none;
+      background: transparent;
+    }
+    .tool:hover { background: rgba(232,222,196,0.1); color: #fff; }
+    .tool.active { background: rgba(193,74,42,0.2); color: var(--accent); }
+    .tool-divider {
+      width: 1px; height: 20px;
+      background: rgba(232,222,196,0.15);
+      margin: 0 4px;
+    }
+    .layout-group {
+      display: inline-flex;
+      background: rgba(232,222,196,0.06);
+      border-radius: 6px;
+      padding: 2px;
+    }
+    .layout-tab {
+      padding: 5px 10px;
+      font-size: 11px;
+      color: rgba(232,222,196,0.7);
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .layout-tab.active { background: rgba(232,222,196,0.15); color: #fff; }
+
+    /* PAGE STAGE */
+    .reader-stage {
+      flex: 1;
+      display: grid;
+      place-items: center;
+      padding: 40px 24px 100px;
+      position: relative;
+    }
+    .stage-edge {
+      position: fixed;
+      top: 60px; bottom: 80px;
+      width: 14%;
+      max-width: 200px;
+      z-index: 5;
+      cursor: pointer;
+      display: grid;
+      align-items: center;
+      pointer-events: auto;
+    }
+    .stage-edge.left { left: 0; justify-items: start; padding-left: 18px; }
+    .stage-edge.right { right: 0; justify-items: end; padding-right: 18px; }
+    .stage-edge .arrow {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: rgba(14,26,54,0.6);
+      border: 1px solid rgba(232,222,196,0.15);
+      display: grid; place-items: center;
+      color: var(--cream-on-navy);
+      font-size: 18px;
+      opacity: 0;
+      transition: opacity .2s, transform .15s;
+    }
+    .stage-edge:hover .arrow { opacity: 1; transform: scale(1.05); }
+
+    .spread {
+      display: flex;
+      gap: 6px;
+      max-width: 1000px;
+      width: 100%;
+      align-items: stretch;
+    }
+    .page {
+      flex: 1;
+      aspect-ratio: 2 / 3;
+      background: linear-gradient(180deg, #f5efe1 0%, #ebe1cc 100%);
+      box-shadow:
+        0 12px 40px rgba(0,0,0,0.4),
+        0 4px 12px rgba(0,0,0,0.3);
+      position: relative;
+      overflow: hidden;
+      color: rgba(26,29,43,0.6);
+      display: flex;
+      flex-direction: column;
+    }
+    .page.left { border-radius: 4px 1px 1px 4px; box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset -8px 0 16px rgba(0,0,0,0.08); }
+    .page.right { border-radius: 1px 4px 4px 1px; box-shadow: 0 12px 40px rgba(0,0,0,0.4), inset 8px 0 16px rgba(0,0,0,0.08); }
+    .page-paper-grain::before {
+      content: "";
+      position: absolute; inset: 0;
+      pointer-events: none;
+      background-image: radial-gradient(rgba(26,29,43,0.04) 1px, transparent 1px);
+      background-size: 3px 3px;
+      mix-blend-mode: multiply;
+    }
+
+    /* mock manga-page art */
+    .page-art {
+      flex: 1;
+      position: relative;
+      margin: 18px;
+      border: 1px solid rgba(26,29,43,0.15);
+      overflow: hidden;
+    }
+    .panel {
+      position: absolute;
+      background: linear-gradient(135deg, rgba(26,29,43,0.18), rgba(26,29,43,0.08));
+      border: 1px solid rgba(26,29,43,0.3);
+      overflow: hidden;
+    }
+    .panel-cap {
+      position: absolute;
+      bottom: 6px; left: 8px;
+      font-family: var(--serif);
+      font-style: italic;
+      font-size: 10px;
+      color: rgba(26,29,43,0.55);
+      max-width: 80%;
+    }
+    .panel-bubble {
+      position: absolute;
+      background: #fff;
+      border: 1px solid rgba(26,29,43,0.6);
+      border-radius: 50%;
+      padding: 6px 10px;
+      font-family: var(--sans);
+      font-size: 9px;
+      color: rgba(26,29,43,0.85);
+      line-height: 1.2;
+      box-shadow: 1px 1px 0 rgba(26,29,43,0.4);
+      max-width: 100px;
+      text-align: center;
+    }
+    .ink-stroke {
+      position: absolute;
+      background: rgba(26,29,43,0.7);
+      transform-origin: 0 50%;
+    }
+
+    .page-num {
+      position: absolute;
+      bottom: 8px;
+      font-family: var(--sans);
+      font-variant-numeric: tabular-nums;
+      font-size: 11px;
+      color: rgba(26,29,43,0.45);
+      letter-spacing: 0.06em;
+    }
+    .page.left .page-num { left: 18px; }
+    .page.right .page-num { right: 18px; }
+    .page-fold {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 16px;
+      pointer-events: none;
+    }
+    .page.left .page-fold { right: 0; background: linear-gradient(90deg, transparent, rgba(0,0,0,0.18)); }
+    .page.right .page-fold { left: 0; background: linear-gradient(270deg, transparent, rgba(0,0,0,0.18)); }
+
+    /* BOTTOM CHROME */
+    .reader-bottom {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 30;
+      background: rgba(14,26,54,0.92);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-top: 1px solid rgba(232,222,196,0.08);
+    }
+    .reader-bottom-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 14px 32px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+    .page-counter {
+      font-family: var(--serif);
+      font-variant-numeric: tabular-nums;
+      font-size: 14px;
+      color: #fff;
+    }
+    .page-counter .cur { font-weight: 600; }
+    .page-counter .sep { margin: 0 6px; opacity: .4; }
+    .page-counter .tot { color: rgba(232,222,196,0.6); }
+
+    .progress-track {
+      position: relative;
+      height: 4px;
+      background: rgba(232,222,196,0.12);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+    .progress-fill {
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 14%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+    .progress-bookmark {
+      position: absolute;
+      top: -3px;
+      width: 2px;
+      height: 10px;
+      background: var(--cream-on-navy);
+      border-radius: 1px;
+    }
+
+    .reader-bottom-right {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .ch-btn {
+      font-size: 12px;
+      color: rgba(232,222,196,0.85);
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      border: 1px solid rgba(232,222,196,0.15);
+      background: transparent;
+      transition: border .15s, background .15s;
+    }
+    .ch-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* CHAPTER DRAWER */
+    .scrim {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 40;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s;
+    }
+    .scrim.show { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: fixed;
+      top: 0; bottom: 0; left: 0;
+      width: 360px;
+      max-width: 92vw;
+      background: var(--bg);
+      color: var(--ink);
+      z-index: 41;
+      transform: translateX(-100%);
+      transition: transform .25s ease;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 4px 0 24px rgba(0,0,0,0.3);
+    }
+    .drawer.open { transform: translateX(0); }
+    .drawer-head {
+      padding: 20px 22px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .drawer-eb {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    .drawer-t {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 22px;
+      margin: 0 0 4px;
+      line-height: 1.1;
+    }
+    .drawer-jp {
+      font-family: var(--jp);
+      font-size: 12px;
+      color: var(--ink-3);
+    }
+    .drawer-close {
+      background: transparent;
+      border: 1px solid var(--line);
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      color: var(--ink-2);
+      display: grid; place-items: center;
+      flex-shrink: 0;
+    }
+    .drawer-close:hover { border-color: var(--ink); color: var(--ink); }
+    .drawer-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 14px 24px;
+    }
+    .drawer-item {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 36px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      text-align: left;
+      font-size: 13px;
+      color: var(--ink);
+      transition: background .15s;
+    }
+    .drawer-item:hover { background: rgba(255,255,255,0.5); }
+    .drawer-item.current {
+      background: var(--navy);
+      color: var(--cream-on-navy);
+    }
+    .drawer-item.current .drawer-num { color: var(--accent); }
+    .drawer-item.current .drawer-when { color: rgba(232,222,196,0.6); }
+    .drawer-num {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--ink-3);
+      font-variant-numeric: tabular-nums;
+    }
+    .drawer-name { font-weight: 500; }
+    .drawer-name .vol { color: var(--ink-3); margin-right: 6px; font-size: 11px; }
+    .drawer-item.current .drawer-name .vol { color: rgba(232,222,196,0.5); }
+    .drawer-when {
+      font-size: 10px;
+      color: var(--ink-3);
+      letter-spacing: 0.03em;
+    }
+
+    /* edge ribbon progress (the small unexpected detail) */
+    .edge-ribbon {
+      position: fixed;
+      right: 0; top: 56px; bottom: 64px;
+      width: 3px;
+      z-index: 4;
+      pointer-events: none;
+    }
+    .edge-ribbon::before {
+      content: "";
+      position: absolute; inset: 0;
+      background: rgba(232,222,196,0.08);
+    }
+    .edge-ribbon-fill {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 14%;
+      background: var(--accent);
+    }
+
+    @media (max-width: 720px) {
+      .reader-top-inner { padding: 10px 16px; gap: 10px; grid-template-columns: auto 1fr auto; }
+      .reader-titlebar { text-align: left; }
+      .reader-tools .layout-group { display: none; }
+      .reader-bottom-inner { padding: 10px 16px; gap: 12px; }
+      .ch-btn { padding: 5px 8px; font-size: 11px; }
+      .reader-stage { padding: 20px 12px 90px; }
+      .spread { flex-direction: column; }
+      .stage-edge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="reader-shell">
+
+    <!-- TOP CHROME -->
+    <header class="reader-top">
+      <div class="reader-top-inner">
+        <a class="reader-back" href="series.html?id=vagabond">
+          <span class="ico">←</span>
+          <span>Series</span>
+        </a>
+        <div class="reader-titlebar">
+          <div class="reader-title">Vagabond</div>
+          <div class="reader-sub">
+            <span class="accent">Ch. 1</span> · The Way of the Sword · <span style="opacity:.7">right → left</span>
+          </div>
+        </div>
+        <div class="reader-tools">
+          <div class="layout-group" role="tablist" aria-label="Layout">
+            <span class="layout-tab">Single</span>
+            <span class="layout-tab active">Double</span>
+            <span class="layout-tab">Vertical</span>
+          </div>
+          <span class="tool-divider"></span>
+          <button class="tool" id="open-chapters" aria-label="Chapters">☰</button>
+          <button class="tool active" aria-label="Bookmark">❏</button>
+          <button class="tool" aria-label="Notes">✎</button>
+          <button class="tool" aria-label="Settings">⚙</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE STAGE (RTL: right page is "first") -->
+    <main class="reader-stage">
+      <div class="stage-edge left" id="next-edge"><div class="arrow">‹</div></div>
+
+      <div class="spread">
+        <!-- Left page (chronologically AFTER right in RTL) -->
+        <div class="page left page-paper-grain">
+          <div class="page-art">
+            <!-- top-left wide panel -->
+            <div class="panel" style="left:0; top:0; width:60%; height:38%;">
+              <div class="ink-stroke" style="left:8%; top:60%; width:84%; height:1.5px; transform:rotate(-1deg);"></div>
+              <div class="ink-stroke" style="left:6%; top:72%; width:90%; height:1px;"></div>
+              <div class="panel-cap">— a sky the color of cooling iron.</div>
+            </div>
+            <!-- top-right narrow -->
+            <div class="panel" style="right:0; top:0; width:40%; height:38%;">
+              <div class="panel-bubble" style="top:14%; left:18%;">"You came back."</div>
+            </div>
+            <!-- bottom-left -->
+            <div class="panel" style="left:0; bottom:0; width:50%; height:60%;">
+              <div class="panel-bubble" style="bottom:20%; left:12%;">"I had to."</div>
+              <div class="ink-stroke" style="left:10%; bottom:8%; width:80%; height:1px;"></div>
+            </div>
+            <!-- bottom-right -->
+            <div class="panel" style="right:0; bottom:0; width:50%; height:60%;">
+              <div class="ink-stroke" style="left:12%; top:24%; width:60%; height:2px; transform:rotate(8deg);"></div>
+              <div class="ink-stroke" style="left:20%; top:38%; width:50%; height:1.5px; transform:rotate(-4deg);"></div>
+              <div class="ink-stroke" style="left:16%; top:54%; width:65%; height:1px;"></div>
+              <div class="panel-cap">the rōnin lowers his blade.</div>
+            </div>
+          </div>
+          <span class="page-num">02</span>
+          <div class="page-fold"></div>
+        </div>
+
+        <!-- Right page (chronologically FIRST in RTL — this is "page 1") -->
+        <div class="page right page-paper-grain">
+          <div class="page-art">
+            <!-- full-bleed top -->
+            <div class="panel" style="left:0; top:0; width:100%; height:55%;">
+              <div class="ink-stroke" style="left:5%; top:16%; width:90%; height:2px; background:rgba(26,29,43,0.5);"></div>
+              <div class="ink-stroke" style="left:8%; top:30%; width:84%; height:1px;"></div>
+              <div class="ink-stroke" style="left:12%; top:42%; width:76%; height:1px;"></div>
+              <div class="panel-cap" style="font-size:11px;">Sekigahara, autumn. Crows above the field.</div>
+            </div>
+            <!-- bottom split -->
+            <div class="panel" style="left:0; bottom:0; width:55%; height:42%;">
+              <div class="panel-bubble" style="top:24%; left:18%; max-width:80px;">"Takezō…"</div>
+              <div class="ink-stroke" style="left:14%; bottom:14%; width:72%; height:1.5px;"></div>
+            </div>
+            <div class="panel" style="right:0; bottom:0; width:45%; height:42%;">
+              <div class="panel-bubble" style="bottom:50%; right:14%; max-width:90px;">"…still alive?"</div>
+              <div class="ink-stroke" style="right:18%; bottom:18%; width:50%; height:1px;"></div>
+            </div>
+          </div>
+          <span class="page-num">01</span>
+          <div class="page-fold"></div>
+        </div>
+      </div>
+
+      <div class="stage-edge right" id="prev-edge"><div class="arrow">›</div></div>
+    </main>
+
+    <!-- BOTTOM CHROME -->
+    <footer class="reader-bottom">
+      <div class="reader-bottom-inner">
+        <div class="page-counter">
+          <span class="cur">01–02</span>
+          <span class="sep">/</span>
+          <span class="tot">22</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill"></div>
+          <div class="progress-bookmark" style="left: 32%;"></div>
+          <div class="progress-bookmark" style="left: 58%;"></div>
+        </div>
+        <div class="reader-bottom-right">
+          <button class="ch-btn">← Prev ch.</button>
+          <button class="ch-btn">Next ch. →</button>
+        </div>
+      </div>
+    </footer>
+
+    <div class="edge-ribbon" aria-hidden="true">
+      <div class="edge-ribbon-fill"></div>
+    </div>
+
+    <!-- CHAPTER DRAWER -->
+    <div class="scrim" id="scrim"></div>
+    <aside class="drawer" id="drawer" aria-hidden="true">
+      <div class="drawer-head">
+        <div>
+          <div class="drawer-eb">Contents</div>
+          <div class="drawer-t">Vagabond</div>
+          <div class="drawer-jp">バガボンド · 327 chapters</div>
+        </div>
+        <button class="drawer-close" id="close-drawer" aria-label="Close">×</button>
+      </div>
+      <div class="drawer-list">
+        <button class="drawer-item current">
+          <span class="drawer-num">001</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>The Way of the Sword</span>
+          <span class="drawer-when">reading</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">002</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>Crows Above the Field</span>
+          <span class="drawer-when">22 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">003</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>Brothers</span>
+          <span class="drawer-when">20 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">004</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>The Mountain Witch</span>
+          <span class="drawer-when">22 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">005</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>Tied to the Tree</span>
+          <span class="drawer-when">24 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">006</span>
+          <span class="drawer-name"><span class="vol">Vol. 1</span>Takuan</span>
+          <span class="drawer-when">22 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">007</span>
+          <span class="drawer-name"><span class="vol">Vol. 2</span>The Naming</span>
+          <span class="drawer-when">22 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">008</span>
+          <span class="drawer-name"><span class="vol">Vol. 2</span>Otsū</span>
+          <span class="drawer-when">20 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">009</span>
+          <span class="drawer-name"><span class="vol">Vol. 2</span>Departure</span>
+          <span class="drawer-when">22 pp</span>
+        </button>
+        <button class="drawer-item">
+          <span class="drawer-num">010</span>
+          <span class="drawer-name"><span class="vol">Vol. 2</span>Yoshioka</span>
+          <span class="drawer-when">24 pp</span>
+        </button>
+      </div>
+    </aside>
+
+  </div>
+
+  <div class="review-bar">
+    <span>beachRead — design 03 · reader</span>
+    <a href="series.html?id=vagabond">← series</a>
+  </div>
+
+  <script>
+    (function(){
+      const drawer = document.getElementById('drawer');
+      const scrim  = document.getElementById('scrim');
+      const open   = document.getElementById('open-chapters');
+      const close  = document.getElementById('close-drawer');
+
+      function openDrawer(){
+        drawer.classList.add('open');
+        scrim.classList.add('show');
+        drawer.setAttribute('aria-hidden','false');
+      }
+      function closeDrawer(){
+        drawer.classList.remove('open');
+        scrim.classList.remove('show');
+        drawer.setAttribute('aria-hidden','true');
+      }
+      open.addEventListener('click', openDrawer);
+      close.addEventListener('click', closeDrawer);
+      scrim.addEventListener('click', closeDrawer);
+
+      // ESC + arrow keys (no-op visual, just so it feels alive)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (drawer.classList.contains('open')) closeDrawer();
+          else window.location.href = 'series.html?id=vagabond';
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>

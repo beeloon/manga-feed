@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>beachRead — manga, world-class</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ===== HOME-ONLY STYLES ===== */
+    .hero {
+      position: relative;
+      padding: 32px 0 48px;
+      min-height: 460px;
+      overflow: hidden;
+    }
+    .hero-art {
+      position: absolute;
+      right: -40px; top: 0;
+      width: 62%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 70% 40%, rgba(26,29,43,0.12), transparent 60%),
+        linear-gradient(120deg, transparent 30%, rgba(26,29,43,0.06) 100%);
+      mask-image: linear-gradient(90deg, transparent, #000 18%, #000);
+    }
+    .hero-art svg { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.85; }
+    .hero-inner { position: relative; max-width: 580px; padding-top: 24px; }
+    .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+    .hero-desc {
+      font-size: 13px; color: var(--ink-2);
+      max-width: 440px; margin: 0 0 28px; line-height: 1.6;
+    }
+    .hero-title {
+      font-family: var(--serif); font-weight: 700;
+      font-size: clamp(56px, 8vw, 96px);
+      line-height: 0.95; letter-spacing: -0.02em;
+      margin: 0 0 6px;
+    }
+    .hero-jp {
+      font-family: var(--jp); font-size: 18px;
+      color: var(--ink-2); letter-spacing: 0.04em; margin: 0 0 28px;
+    }
+    .hero-cta { display: flex; gap: 10px; }
+
+    /* TRENDING TABLE */
+    .tabs {
+      display: inline-flex;
+      background: rgba(26,29,43,0.05);
+      border-radius: 8px; padding: 3px;
+    }
+    .tab {
+      padding: 7px 16px; font-size: 12px; font-weight: 500;
+      color: var(--ink-2); border-radius: 6px; cursor: pointer;
+      transition: background .15s;
+    }
+    .tab.active { background: var(--navy); color: var(--cream-on-navy); }
+    .filters { display: flex; gap: 8px; align-items: center; }
+    .pill {
+      font-size: 11px; font-weight: 500;
+      padding: 7px 12px;
+      border: 1px solid var(--line); border-radius: 6px;
+      background: rgba(255,255,255,0.5);
+      color: var(--ink-2); cursor: pointer;
+    }
+    .pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .pill.dropdown::after { content: "▾"; margin-left: 6px; font-size: 9px; color: var(--ink-3); }
+    .pill.cta { background: var(--navy); color: var(--cream-on-navy); border-color: var(--navy); }
+
+    .rank-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0 48px; border-top: 1px solid var(--line);
+    }
+    .rank-head {
+      display: grid; grid-template-columns: 28px 1fr 80px 80px;
+      padding: 12px 4px; font-size: 10px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--ink-3); border-bottom: 1px solid var(--line);
+    }
+    .rank-row {
+      display: grid; grid-template-columns: 28px 1fr 80px 80px;
+      align-items: center; padding: 12px 4px;
+      border-bottom: 1px solid var(--line-2);
+      font-size: 13px; transition: background .15s;
+      cursor: pointer; text-decoration: none; color: inherit;
+    }
+    .rank-row:hover { background: rgba(255,255,255,0.4); }
+    .rank-row .num { font-size: 13px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+    .rank-title { display: flex; align-items: center; gap: 12px; }
+    .rank-cover {
+      width: 36px; height: 50px; border-radius: 3px;
+      background: var(--bg-3); flex-shrink: 0;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.08);
+      display: grid; place-items: center;
+      font-family: var(--serif); font-weight: 700;
+      color: rgba(26,29,43,0.4); font-size: 16px;
+      overflow: hidden;
+    }
+    .rank-meta .t { font-weight: 500; }
+    .rank-meta .jp { font-family: var(--jp); font-size: 11px; color: var(--ink-3); margin-top: 2px; }
+    .rank-row .num-cell {
+      text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2);
+    }
+
+    /* LATEST UPDATES */
+    .updates-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .update-card {
+      display: grid; grid-template-columns: 130px 1fr;
+      gap: 14px; background: var(--navy);
+      color: var(--cream-on-navy);
+      border-radius: 10px; padding: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .update-cover {
+      aspect-ratio: 2 / 3; border-radius: 6px;
+      background: linear-gradient(135deg,#d4a82a,#c1841a);
+      display: grid; place-items: center;
+      color: rgba(0,0,0,0.55);
+      font-family: var(--serif); font-weight: 800;
+      font-size: 22px; text-align: center;
+      padding: 6px; line-height: 1;
+    }
+    .update-card:nth-child(2) .update-cover { background: linear-gradient(135deg,#e0552e,#8a1d12); }
+    .update-card:nth-child(3) .update-cover { background: linear-gradient(135deg,#4a5d7a,#2a3548); color: rgba(255,255,255,0.7); }
+    .update-body { display: flex; flex-direction: column; min-width: 0; }
+    .update-title {
+      font-family: var(--serif); font-weight: 600;
+      font-size: 18px; line-height: 1.1; margin: 0 0 2px;
+    }
+    .update-author { font-style: italic; font-size: 11px; color: rgba(232,222,196,0.6); margin-bottom: 10px; }
+    .chap-list { list-style: none; margin: 0 0 10px; padding: 0; font-size: 11px; flex: 1; }
+    .chap-list li {
+      padding: 3px 0; color: rgba(232,222,196,0.85);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .chap-list li::before {
+      content: ""; width: 10px; height: 10px;
+      border-radius: 2px; background: var(--accent); flex-shrink: 0;
+    }
+    .update-tags { display: flex; gap: 6px; margin-bottom: 8px; }
+    .update-tag {
+      font-size: 10px; padding: 2px 8px;
+      border: 1px solid rgba(232,222,196,0.2);
+      border-radius: 999px; color: rgba(232,222,196,0.8);
+    }
+    .update-time { font-size: 10px; color: rgba(232,222,196,0.5); }
+
+    /* RECENTLY ADDED */
+    .recent-row { display: grid; grid-template-columns: repeat(11, 1fr); gap: 12px; }
+    .recent-item .cover {
+      aspect-ratio: 2 / 3; border-radius: 4px;
+      background: var(--bg-3); margin-bottom: 8px;
+      display: grid; place-items: center;
+      font-family: var(--serif); font-weight: 700;
+      color: rgba(26,29,43,0.35); font-size: 13px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: transform .2s; overflow: hidden;
+    }
+    .recent-item:hover .cover { transform: translateY(-3px); }
+    .recent-item .name { font-size: 11px; font-weight: 500; line-height: 1.2; margin-bottom: 2px; }
+    .recent-item .genre { font-size: 10px; color: var(--ink-3); }
+    .recent-item.view-all .cover {
+      background: var(--navy); color: var(--cream-on-navy); font-size: 18px;
+    }
+    .recent-item.view-all .name { color: var(--accent); }
+    .view-all-link { font-size: 11px; color: var(--ink-2); font-weight: 500; }
+    .view-all-link:hover { color: var(--accent); }
+
+    /* LATEST NEWS */
+    .news-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 18px; }
+    .news-feature {
+      position: relative; aspect-ratio: 16 / 9;
+      border-radius: 12px; overflow: hidden;
+      background: linear-gradient(135deg,#5a7a9a,#2a3a5a);
+      display: flex; align-items: flex-end;
+    }
+    .news-feature::before {
+      content: ""; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 30% 50%, rgba(0,0,0,0.05), transparent 60%);
+    }
+    .news-feature .badge {
+      position: absolute; top: 16px; left: 16px;
+      width: 38px; height: 38px; border-radius: 8px;
+      background: var(--navy); color: var(--cream-on-navy);
+      display: grid; place-items: center;
+    }
+    .news-feature .label {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      background: rgba(255,255,255,0.95);
+      padding: 14px 18px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 13px; font-weight: 500;
+    }
+    .news-feature .label .arrow {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 1px solid var(--line);
+      display: grid; place-items: center; font-size: 12px;
+    }
+    .news-side { display: flex; flex-direction: column; gap: 10px; }
+    .news-card {
+      position: relative; flex: 1;
+      border-radius: 10px; overflow: hidden;
+      background: var(--bg-3); min-height: 86px;
+      display: flex; align-items: flex-end;
+    }
+    .news-card.n1 { background: linear-gradient(135deg,#3a4858,#1a2230); }
+    .news-card.n2 { background: linear-gradient(135deg,#a8b8c8,#4a5868); }
+    .news-card.n3 { background: linear-gradient(135deg,#3a3a3a,#1a1a1a); }
+    .news-card .label {
+      width: 100%; background: rgba(255,255,255,0.95);
+      padding: 8px 12px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 11px; font-weight: 500;
+    }
+    .news-card .label .arrow { font-size: 10px; color: var(--ink-2); }
+
+    @media (max-width: 1100px) {
+      .recent-row { grid-template-columns: repeat(6, 1fr); }
+      .recent-row > :nth-child(n+7) { display: none; }
+    }
+    @media (max-width: 860px) {
+      .rank-grid { grid-template-columns: 1fr; gap: 0; }
+      .updates-row { grid-template-columns: 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+      .recent-row { grid-template-columns: repeat(4, 1fr); }
+      .recent-row > :nth-child(n+5) { display: none; }
+    }
+    @media (max-width: 560px) {
+      .hero-title { font-size: 56px; }
+      .hero-art { width: 90%; opacity: 0.4; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="container">
+    <nav class="nav">
+      <a class="logo" href="index.html">
+        <span class="logo-mark">b</span>
+        <span>beachRead</span>
+      </a>
+      <div class="search">
+        <input type="text" placeholder="Search for a manga or author" />
+        <kbd>Ctrl K</kbd>
+      </div>
+      <div class="nav-links">
+        <a href="#" class="active">Catalog</a>
+        <a href="#">Discover</a>
+        <a href="#">Merch</a>
+        <span class="avatar">B</span>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero container">
+    <div class="hero-art" aria-hidden="true">
+      <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+        <line x1="0" y1="340" x2="800" y2="340" stroke="rgba(26,29,43,0.15)" stroke-width="0.5"/>
+        <g fill="rgba(26,29,43,0.7)">
+          <path d="M120 80 q8 -8 16 0 q8 -8 16 0 q-8 4 -16 4 q-8 0 -16 -4z"/>
+          <path d="M200 130 q10 -10 20 0 q10 -10 20 0 q-10 5 -20 5 q-10 0 -20 -5z"/>
+          <path d="M340 60 q6 -6 12 0 q6 -6 12 0 q-6 3 -12 3 q-6 0 -12 -3z"/>
+          <path d="M450 100 q9 -9 18 0 q9 -9 18 0 q-9 4 -18 4 q-9 0 -18 -4z"/>
+          <path d="M580 50 q7 -7 14 0 q7 -7 14 0 q-7 3 -14 3 q-7 0 -14 -3z"/>
+          <path d="M680 130 q12 -12 24 0 q12 -12 24 0 q-12 6 -24 6 q-12 0 -24 -6z"/>
+          <path d="M150 200 q5 -5 10 0 q5 -5 10 0 q-5 2 -10 2 q-5 0 -10 -2z"/>
+          <path d="M720 220 q9 -9 18 0 q9 -9 18 0 q-9 4 -18 4 q-9 0 -18 -4z"/>
+          <path d="M540 180 q8 -8 16 0 q8 -8 16 0 q-8 4 -16 4 q-8 0 -16 -4z"/>
+        </g>
+        <g fill="rgba(26,29,43,0.85)" transform="translate(560,220)">
+          <path d="M0 30 q-30 -40 -50 -20 q-15 15 0 30 q15 15 40 0 q-10 5 -20 5 l60 0 q30 5 50 -10 q15 -10 0 -20 q-15 -10 -40 0 q10 -10 30 -10 q-30 -10 -70 25z"/>
+        </g>
+        <g fill="rgba(26,29,43,0.6)" transform="translate(380,210)">
+          <ellipse cx="0" cy="0" rx="14" ry="20"/>
+          <rect x="-12" y="18" width="24" height="80" rx="4"/>
+          <rect x="-30" y="40" width="14" height="50" rx="3"/>
+          <rect x="16" y="40" width="14" height="50" rx="3"/>
+          <rect x="-10" y="95" width="8" height="40"/>
+          <rect x="2" y="95" width="8" height="40"/>
+          <line x1="32" y1="20" x2="80" y2="-30" stroke="rgba(26,29,43,0.7)" stroke-width="2"/>
+        </g>
+        <path d="M0 360 Q200 340 400 365 T800 360 L800 500 L0 500 Z" fill="rgba(26,29,43,0.18)"/>
+        <path d="M0 400 Q150 385 300 405 T600 400 T800 405 L800 500 L0 500 Z" fill="rgba(26,29,43,0.28)"/>
+        <g fill="rgba(26,29,43,0.55)">
+          <ellipse cx="80" cy="380" rx="22" ry="5"/>
+          <ellipse cx="180" cy="395" rx="28" ry="6"/>
+          <ellipse cx="280" cy="385" rx="20" ry="5"/>
+          <ellipse cx="500" cy="400" rx="30" ry="6"/>
+          <ellipse cx="640" cy="392" rx="26" ry="5"/>
+          <ellipse cx="160" cy="420" rx="32" ry="6"/>
+          <ellipse cx="380" cy="425" rx="28" ry="6"/>
+          <ellipse cx="600" cy="430" rx="34" ry="7"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-inner">
+      <p class="eyebrow">Trending Now</p>
+      <div class="tags">
+        <span class="tag">Seinen</span>
+        <span class="tag">Drama</span>
+        <span class="tag">Epic</span>
+        <span class="tag">Martial Arts</span>
+      </div>
+      <p class="hero-desc">The story starts in 1600, in the aftermath of the decisive Battle of Sekigahara. Two 17-year-old teenagers who joined the losing side, Takezō Shinmen and Matahachi Hon'iden, lie wounded in the battlefield and pursued by survivor hunters. They manage to escape and swear to become "Invincible Under The Heavens".</p>
+      <h1 class="hero-title">Vagabond</h1>
+      <p class="hero-jp">バガボンド</p>
+      <div class="hero-cta">
+        <a class="btn-primary" href="series.html?id=vagabond">Chapter 1 <span style="opacity:.7">→</span></a>
+        <a class="btn-icon" href="#" aria-label="Bookmark">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 2h10v12l-5-3-5 3z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRENDING TABLE -->
+  <section class="container section">
+    <div class="section-head">
+      <div class="tabs">
+        <span class="tab active">Trending</span>
+        <span class="tab">Top</span>
+      </div>
+      <div class="filters">
+        <span class="pill active">1d</span>
+        <span class="pill">7d</span>
+        <span class="pill">30d</span>
+        <span class="pill">1y</span>
+        <span class="pill dropdown">All Genres</span>
+        <span class="pill cta">View All</span>
+      </div>
+    </div>
+
+    <div class="rank-grid">
+      <div class="rank-head" style="grid-column: 1 / 2;">
+        <span>Rank</span><span>Title</span><span style="text-align:right;">Chapters</span><span style="text-align:right;">Reads</span>
+      </div>
+      <div class="rank-head" style="grid-column: 2 / 3;">
+        <span>Rank</span><span>Title</span><span style="text-align:right;">Chapters</span><span style="text-align:right;">Reads</span>
+      </div>
+
+      <a class="rank-row" href="series.html?id=berserk" style="grid-column:1/2;"><span class="num">1</span><div class="rank-title"><div class="rank-cover cv5">B</div><div class="rank-meta"><div class="t">Berserk</div><div class="jp">ベルセルク</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=jojo" style="grid-column:1/2;"><span class="num">2</span><div class="rank-title"><div class="rank-cover cv1">J</div><div class="rank-meta"><div class="t">JoJo no Kimyou na Bouken Part 7: Steel Ball Run</div><div class="jp">ジョジョの奇妙な冒険 Part7 STEEL BALL RUN</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=vagabond" style="grid-column:1/2;"><span class="num">3</span><div class="rank-title"><div class="rank-cover cv6">V</div><div class="rank-meta"><div class="t">Vagabond</div><div class="jp">バガボンド</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=onepiece" style="grid-column:1/2;"><span class="num">4</span><div class="rank-title"><div class="rank-cover cv4">O</div><div class="rank-meta"><div class="t">One Piece</div><div class="jp">ONE PIECE</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=monster" style="grid-column:1/2;"><span class="num">5</span><div class="rank-title"><div class="rank-cover cv9">M</div><div class="rank-meta"><div class="t">Monster</div><div class="jp">MONSTER</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
+
+      <a class="rank-row" href="series.html?id=slamdunk" style="grid-column:2/3;"><span class="num">6</span><div class="rank-title"><div class="rank-cover cv8">S</div><div class="rank-meta"><div class="t">Slam Dunk</div><div class="jp">SLAM DUNK</div></div></div><span class="num-cell">376</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=vinland" style="grid-column:2/3;"><span class="num">7</span><div class="rank-title"><div class="rank-cover cv7">V</div><div class="rank-meta"><div class="t">Vinland Saga</div><div class="jp">ヴィンランド・サガ</div></div></div><span class="num-cell">95</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=fma" style="grid-column:2/3;"><span class="num">8</span><div class="rank-title"><div class="rank-cover cv2">F</div><div class="rank-meta"><div class="t">Fullmetal Alchemist</div><div class="jp">鋼の錬金術師</div></div></div><span class="num-cell">327</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=grandblue" style="grid-column:2/3;"><span class="num">9</span><div class="rank-title"><div class="rank-cover cv3">G</div><div class="rank-meta"><div class="t">Grand Blue</div><div class="jp">ぐらんぶる</div></div></div><span class="num-cell">1122</span><span class="num-cell">717,293</span></a>
+      <a class="rank-row" href="series.html?id=kingdom" style="grid-column:2/3;"><span class="num">10</span><div class="rank-title"><div class="rank-cover cv10">K</div><div class="rank-meta"><div class="t">Kingdom</div><div class="jp">キングダム</div></div></div><span class="num-cell">162</span><span class="num-cell">717,293</span></a>
+    </div>
+  </section>
+
+  <!-- LATEST UPDATES -->
+  <section class="container section">
+    <div class="section-head">
+      <h3 class="section-h">Latest Updates</h3>
+      <a href="#" class="view-all-link">View All</a>
+    </div>
+    <div class="updates-row">
+      <a class="update-card" href="series.html?id=ghost-fixers">
+        <div class="update-cover">GHOST<br/>FIXERS</div>
+        <div class="update-body">
+          <div class="update-title">Ghost Fixers</div>
+          <div class="update-author">Tanaka Yasuki</div>
+          <ul class="chap-list">
+            <li>Vol. 3 Ch. 19 — "Victory"</li>
+            <li>Vol. 3 Ch. 18 — "Dependent"</li>
+            <li>Vol. 3 Ch. 17 — "First Love"</li>
+            <li>Vol. 3 Ch. 16 — "Comrades"</li>
+          </ul>
+          <div class="update-tags">
+            <span class="update-tag">Action</span>
+            <span class="update-tag">Shonen</span>
+            <span class="update-tag">Mystery</span>
+          </div>
+          <div class="update-time">Updated 16min ago</div>
+        </div>
+      </a>
+      <a class="update-card" href="series.html?id=gokuragukai">
+        <div class="update-cover">GOKU<br/>RAGUKAI</div>
+        <div class="update-body">
+          <div class="update-title">Gokuragukai</div>
+          <div class="update-author">Sano Yuto</div>
+          <ul class="chap-list">
+            <li>Vol. 5 Ch. 20 — "Take my Love!"</li>
+            <li>Vol. 4 Ch. 19 — "Let's make a…"</li>
+            <li>Vol. 4 Ch. 18 — "Girl Trouble"</li>
+            <li>Vol. 4 Ch. 17 — "Tons of proble…"</li>
+          </ul>
+          <div class="update-tags">
+            <span class="update-tag">Action</span>
+            <span class="update-tag">Supernatural</span>
+            <span class="update-tag">Mystery</span>
+          </div>
+          <div class="update-time">Updated 16min ago</div>
+        </div>
+      </a>
+      <a class="update-card" href="series.html?id=gachiakuta">
+        <div class="update-cover">GACHI<br/>AKUTA</div>
+        <div class="update-body">
+          <div class="update-title">Gachiakuta</div>
+          <div class="update-author">Kei Urana</div>
+          <ul class="chap-list">
+            <li>Vol. 5 Ch. 20 — "Take my Love!"</li>
+            <li>Vol. 4 Ch. 19 — "Let's make a…"</li>
+            <li>Vol. 4 Ch. 18 — "Girl Trouble"</li>
+            <li>Vol. 4 Ch. 17 — "Tons of proble…"</li>
+          </ul>
+          <div class="update-tags">
+            <span class="update-tag">Action</span>
+            <span class="update-tag">Shonen</span>
+            <span class="update-tag">Mystery</span>
+          </div>
+          <div class="update-time">Updated 16min ago</div>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- RECENTLY ADDED -->
+  <section class="container section">
+    <h3 class="section-h" style="margin-bottom:18px;">Recently Added</h3>
+    <div class="recent-row">
+      <a class="recent-item" href="series.html?id=ghost-fixers"><div class="cover cv1">GF</div><div class="name">Ghost Fixers</div><div class="genre">Shounen / Drama</div></a>
+      <a class="recent-item" href="series.html?id=gokuragukai"><div class="cover cv2">G</div><div class="name">Gokurakugai</div><div class="genre">Seinen / Action</div></a>
+      <a class="recent-item" href="series.html?id=gachiakuta"><div class="cover cv3">GA</div><div class="name">Gachiakuta</div><div class="genre">Shounen / Action</div></a>
+      <a class="recent-item" href="series.html?id=ghost-fixers"><div class="cover cv4">GF</div><div class="name">Ghost Fixers</div><div class="genre">Shounen / Drama</div></a>
+      <a class="recent-item" href="series.html?id=gokuragukai"><div class="cover cv5">G</div><div class="name">Gokurakugai</div><div class="genre">Seinen / Action</div></a>
+      <a class="recent-item" href="series.html?id=gachiakuta"><div class="cover cv6">GA</div><div class="name">Gachiakuta</div><div class="genre">Shounen / Action</div></a>
+      <a class="recent-item" href="series.html?id=ghost-fixers"><div class="cover cv7">GF</div><div class="name">Ghost Fixers</div><div class="genre">Shounen / Drama</div></a>
+      <a class="recent-item" href="series.html?id=gokuragukai"><div class="cover cv8">G</div><div class="name">Gokurakugai</div><div class="genre">Seinen / Action</div></a>
+      <a class="recent-item" href="series.html?id=gachiakuta"><div class="cover cv9">GA</div><div class="name">Gachiakuta</div><div class="genre">Shounen / Action</div></a>
+      <a class="recent-item" href="series.html?id=berserk"><div class="cover cv10">B</div><div class="name">Berserk</div><div class="genre">Seinen / Drama</div></a>
+      <a class="recent-item view-all" href="#"><div class="cover">★</div><div class="name">View All</div><div class="genre">975 manga</div></a>
+    </div>
+  </section>
+
+  <!-- LATEST NEWS -->
+  <section class="container section">
+    <h3 class="section-h" style="margin-bottom:18px;">Latest News</h3>
+    <div class="news-grid">
+      <article class="news-feature">
+        <div class="badge">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+            <rect x="3" y="3" width="10" height="10" rx="1.5"/>
+            <line x1="5" y1="6" x2="11" y2="6"/>
+            <line x1="5" y1="9" x2="9" y2="9"/>
+          </svg>
+        </div>
+        <div class="label">
+          <span>Historic second Oscars win for Miyazaki sparks celebration in Japan as Asian talent increasingly recognized</span>
+          <span class="arrow">→</span>
+        </div>
+      </article>
+      <div class="news-side">
+        <article class="news-card n1">
+          <div class="label"><span>Gachiakuta anime confirmed for 2025</span><span class="arrow">→</span></div>
+        </article>
+        <article class="news-card n2">
+          <div class="label"><span>'Dandadan' gets first full trailer for English dub</span><span class="arrow">→</span></div>
+        </article>
+        <article class="news-card n3">
+          <div class="label"><span>One Piece English dub: Dr. Vegapunk voice actor…</span><span class="arrow">→</span></div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="#">Plans &amp; Pricing</a></li>
+            <li><a href="#">Reading Features</a></li>
+            <li><a href="#">Updates &amp; Releases</a></li>
+            <li><a href="#">Supported Devices</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">News &amp; Events</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact Support</a></li>
+            <li><a href="#">Community Forum</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Copyright Information</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-brand">
+          <a class="logo" href="index.html">
+            <span class="logo-mark">b</span>
+            <span>beachRead</span>
+          </a>
+          <p class="jp-tagline">世界中の読者に最高のマンガを届ける。</p>
+          <p class="tagline">Bringing the best of manga<br/>to readers worldwide.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 beachRead Inc. All rights reserved.</span>
+        <div class="socials">
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="X">✕</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="review-bar">
+    <span>beachRead — design 03 · home</span>
+    <a href="/">← back to review</a>
+  </div>
+
+</body>
+</html>

@@ -2,18 +2,19 @@
 
 A manga reader web app — browse, follow, and read series in a clean reading-first interface.
 
-This repository currently hosts an **MVP review build**: two designer-supplied HTML/CSS/JS prototypes served side-by-side so the team can compare directions before committing to a production stack.
+This repository currently hosts an **MVP review build**: three designer-supplied HTML/CSS/JS prototypes served side-by-side so the team can compare directions before committing to a production stack.
 
 ## Live demo
 
 After GitHub Pages is configured, the site will be available at:
 **https://beeloon.github.io/manga-feed/**
 
-- `/` — landing page with two design cards
+- `/` — landing page with three design cards
 - `/folio/` — "Folio", a warm editorial reading library
 - `/riso/` — "Riso/Read", a risograph-zine alternate
+- `/beach/` — "beachRead", an editorial portal (home → series → reader flow)
 
-Each prototype includes a Tweaks panel (top-right) for toggling theme, accent, layout, and font pairing.
+The Folio and Riso/Read prototypes each include a Tweaks panel (top-right) for toggling theme, accent, layout, and font pairing. beachRead is a static multi-page flow you walk through end-to-end.
 
 ## Run locally
 

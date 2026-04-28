@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vagabond — beachRead</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700;800&family=Noto+Sans+JP:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ===== SERIES-ONLY ===== */
+    .breadcrumb {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--ink-3);
+      padding: 8px 0 0;
+    }
+    .breadcrumb a { color: var(--ink-2); }
+    .breadcrumb a:hover { color: var(--accent); }
+    .breadcrumb .sep { color: var(--ink-3); opacity: .5; }
+    .breadcrumb .current { color: var(--ink); font-weight: 500; }
+
+    /* hero detail */
+    .series-hero {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 40px;
+      padding: 32px 0 48px;
+      align-items: start;
+    }
+    .series-cover-wrap {
+      position: relative;
+    }
+    .series-cover {
+      aspect-ratio: 2 / 3;
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(26,29,43,0.18), 0 2px 6px rgba(26,29,43,0.08);
+      display: grid; place-items: center;
+      font-family: var(--serif);
+      font-weight: 800;
+      font-size: 56px;
+      color: rgba(255,255,255,0.85);
+      text-align: center;
+      padding: 20px;
+      line-height: 1;
+      overflow: hidden;
+      background: linear-gradient(135deg,#bfa37a,#75603e);
+    }
+    .series-cover.cv-vagabond {
+      background:
+        radial-gradient(ellipse at 60% 30%, rgba(255,255,255,0.15), transparent 60%),
+        linear-gradient(160deg,#8a7556 0%, #4a3c28 60%, #2a2018 100%);
+    }
+    .series-quick {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quick-row {
+      display: flex; gap: 10px;
+    }
+    .quick-row .btn-primary { flex: 1; justify-content: center; }
+    .stack-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .stack-row .btn-ghost { justify-content: center; }
+    .small-stat-grid {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.4);
+    }
+    .small-stat {
+      padding: 12px 14px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+    .small-stat:nth-child(2n) { border-right: none; }
+    .small-stat:nth-last-child(-n+2) { border-bottom: none; }
+    .small-stat .l {
+      font-size: 10px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-3);
+      margin-bottom: 4px;
+    }
+    .small-stat .v {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 18px;
+    }
+    .small-stat .v small {
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 11px;
+      color: var(--ink-3);
+      margin-left: 3px;
+    }
+
+    .series-meta { padding-top: 8px; }
+    .series-eyebrow {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 12px;
+    }
+    .series-title {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: clamp(48px, 6vw, 80px);
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      margin: 0 0 4px;
+    }
+    .series-jp {
+      font-family: var(--jp);
+      font-size: 18px;
+      color: var(--ink-2);
+      letter-spacing: 0.04em;
+      margin: 0 0 18px;
+    }
+    .series-by {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 13px;
+      color: var(--ink-2);
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .series-by strong { color: var(--ink); font-weight: 500; }
+    .series-by .dot { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-3); }
+    .series-by .status {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-weight: 500;
+    }
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #d4a82a;
+      box-shadow: 0 0 0 3px rgba(212,168,42,0.18);
+    }
+    .series-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px; }
+    .series-syn {
+      font-size: 14.5px;
+      line-height: 1.7;
+      color: var(--ink-2);
+      max-width: 64ch;
+      margin: 0 0 28px;
+    }
+    .series-syn .lead {
+      font-family: var(--serif);
+      font-weight: 500;
+      font-size: 19px;
+      line-height: 1.45;
+      color: var(--ink);
+      display: block;
+      margin-bottom: 12px;
+    }
+
+    /* big stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 36px;
+    }
+    .stat-cell {
+      padding: 18px 0;
+      border-right: 1px solid var(--line);
+      padding-right: 18px;
+    }
+    .stat-cell:last-child { border-right: none; padding-right: 0; }
+    .stat-cell:not(:first-child) { padding-left: 18px; }
+    .stat-cell .lab {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--ink-3);
+      margin-bottom: 6px;
+    }
+    .stat-cell .val {
+      font-family: var(--serif);
+      font-weight: 700;
+      font-size: 28px;
+      color: var(--ink);
+      line-height: 1;
+    }
+    .stat-cell .val small {
+      font-family: var(--sans);
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--ink-3);
+      margin-left: 4px;
+    }
+
+    /* chapter list */
+    .chap-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .chap-tabs {
+      display: inline-flex;
+      background: rgba(26,29,43,0.05);
+      border-radius: 8px;
+      padding: 3px;
+    }
+    .chap-tab {
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-2);
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .chap-tab.active { background: var(--navy); color: var(--cream-on-navy); }
+    .chap-search {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: var(--ink-3);
+      background: rgba(255,255,255,0.5);
+    }
+    .chap-sort {
+      font-size: 11px;
+      color: var(--ink-2);
+      cursor: pointer;
+      padding: 7px 12px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(255,255,255,0.5);
+    }
+    .chap-sort::after { content: " ↓"; opacity: .6; }
+
+    .chap-table { border-top: 1px solid var(--line); }
+    .chap-head {
+      display: grid;
+      grid-template-columns: 60px 1fr 80px 100px 90px;
+      padding: 10px 4px;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ink-3);
+      border-bottom: 1px solid var(--line);
+    }
+    .chap-row {
+      display: grid;
+      grid-template-columns: 60px 1fr 80px 100px 90px;
+      align-items: center;
+      padding: 12px 4px;
+      border-bottom: 1px solid var(--line-2);
+      font-size: 13px;
+      color: inherit;
+      text-decoration: none;
+      transition: background .15s;
+      cursor: pointer;
+    }
+    .chap-row:hover { background: rgba(255,255,255,0.4); }
+    .chap-num {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 16px;
+      color: var(--ink);
+    }
+    .chap-title { font-weight: 500; }
+    .chap-title .vol { color: var(--ink-3); margin-right: 6px; font-size: 11px; }
+    .chap-pages, .chap-when {
+      font-variant-numeric: tabular-nums;
+      color: var(--ink-2);
+      font-size: 12px;
+    }
+    .chap-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--ink-2);
+    }
+    .chap-status .d {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--ink-3);
+    }
+    .chap-status.new {
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .chap-status.new .d { background: var(--accent); box-shadow: 0 0 0 3px rgba(193,74,42,0.18); }
+    .chap-status.unread { color: var(--ink); }
+    .chap-status.unread .d { background: var(--navy); }
+    .chap-status.read { color: var(--ink-3); }
+
+    .chap-show-more {
+      display: block;
+      text-align: center;
+      margin: 18px auto 0;
+      font-size: 12px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* related */
+    .related-row {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 14px;
+    }
+    .rel-item .cover {
+      aspect-ratio: 2 / 3;
+      border-radius: 4px;
+      background: var(--bg-3);
+      margin-bottom: 8px;
+      display: grid; place-items: center;
+      font-family: var(--serif);
+      font-weight: 700;
+      color: rgba(26,29,43,0.35);
+      font-size: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: transform .2s;
+    }
+    .rel-item:hover .cover { transform: translateY(-3px); }
+    .rel-item .name {
+      font-size: 12px; font-weight: 500; line-height: 1.2;
+      margin-bottom: 2px;
+    }
+    .rel-item .genre { font-size: 10px; color: var(--ink-3); }
+
+    /* notes */
+    .notes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .note-card {
+      background: rgba(255,255,255,0.5);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 18px 20px;
+    }
+    .note-eb {
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .note-t {
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 19px;
+      margin: 0 0 8px;
+      line-height: 1.2;
+    }
+    .note-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: var(--ink-2);
+      margin: 0;
+    }
+
+    @media (max-width: 980px) {
+      .series-hero { grid-template-columns: 240px 1fr; gap: 28px; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .stat-cell:nth-child(2) { border-right: none; padding-right: 0; }
+      .stat-cell:nth-child(3) { padding-left: 0; border-bottom: 1px solid var(--line); }
+      .stat-cell:nth-child(4) { border-right: none; }
+      .related-row { grid-template-columns: repeat(4, 1fr); }
+      .related-row > :nth-child(n+5) { display: none; }
+      .notes-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .series-hero { grid-template-columns: 1fr; }
+      .series-cover { max-width: 240px; margin: 0 auto; }
+      .chap-row, .chap-head { grid-template-columns: 50px 1fr 80px 80px; }
+      .chap-row .chap-status, .chap-head span:last-child { display: none; }
+      .related-row { grid-template-columns: repeat(3, 1fr); }
+      .related-row > :nth-child(n+4) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <header class="container">
+    <nav class="nav">
+      <a class="logo" href="index.html">
+        <span class="logo-mark">b</span>
+        <span>beachRead</span>
+      </a>
+      <div class="search">
+        <input type="text" placeholder="Search for a manga or author" />
+        <kbd>Ctrl K</kbd>
+      </div>
+      <div class="nav-links">
+        <a href="index.html" class="active">Catalog</a>
+        <a href="#">Discover</a>
+        <a href="#">Merch</a>
+        <span class="avatar">B</span>
+      </div>
+    </nav>
+    <div class="breadcrumb">
+      <a href="index.html">← Catalog</a>
+      <span class="sep">/</span>
+      <a href="#">Seinen</a>
+      <span class="sep">/</span>
+      <span class="current">Vagabond</span>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="container series-hero">
+    <div class="series-cover-wrap">
+      <div class="series-cover cv-vagabond">武</div>
+      <div class="series-quick">
+        <div class="quick-row">
+          <a class="btn-primary" href="reader.html?id=vagabond&amp;ch=1">▶ Read Ch. 1</a>
+        </div>
+        <div class="stack-row">
+          <button class="btn-ghost">＋ Library</button>
+          <button class="btn-ghost">↗ Share</button>
+        </div>
+      </div>
+      <div class="small-stat-grid">
+        <div class="small-stat">
+          <div class="l">Status</div>
+          <div class="v">Completed</div>
+        </div>
+        <div class="small-stat">
+          <div class="l">Year</div>
+          <div class="v">1998<small>—2015</small></div>
+        </div>
+        <div class="small-stat">
+          <div class="l">Direction</div>
+          <div class="v">RTL</div>
+        </div>
+        <div class="small-stat">
+          <div class="l">Demo</div>
+          <div class="v">Seinen</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="series-meta">
+      <p class="series-eyebrow">№ 03 · Trending this week</p>
+      <h1 class="series-title">Vagabond</h1>
+      <p class="series-jp">バガボンド</p>
+      <div class="series-by">
+        <span>by <strong>Takehiko Inoue</strong></span>
+        <span class="dot"></span>
+        <span>Original by <strong>Eiji Yoshikawa</strong></span>
+        <span class="dot"></span>
+        <span class="status"><span class="status-dot"></span>Hiatus</span>
+      </div>
+      <div class="series-tags">
+        <span class="tag">Seinen</span>
+        <span class="tag">Drama</span>
+        <span class="tag">Epic</span>
+        <span class="tag">Martial Arts</span>
+        <span class="tag">Historical</span>
+        <span class="tag">Philosophy</span>
+      </div>
+      <p class="series-syn">
+        <span class="lead">"To go on living means putting yourself, again and again, on the line."</span>
+        The story starts in 1600, in the aftermath of the decisive Battle of Sekigahara. Two 17-year-old teenagers who joined the losing side, Takezō Shinmen and Matahachi Hon'iden, lie wounded in the battlefield and pursued by survivor hunters. They manage to escape — and Takezō, after years of solitary training, returns to civilization as Miyamoto Musashi, sword-saint in the making, sworn to become "Invincible Under The Heavens".
+      </p>
+
+      <div class="stats-row">
+        <div class="stat-cell">
+          <div class="lab">Chapters</div>
+          <div class="val">327</div>
+        </div>
+        <div class="stat-cell">
+          <div class="lab">Volumes</div>
+          <div class="val">37</div>
+        </div>
+        <div class="stat-cell">
+          <div class="lab">Reads</div>
+          <div class="val">717,293</div>
+        </div>
+        <div class="stat-cell">
+          <div class="lab">Rating</div>
+          <div class="val">4.9 <small>/5</small></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHAPTERS -->
+  <section class="container section" style="padding-top: 0;">
+    <div class="section-head">
+      <h3 class="section-h">Chapters</h3>
+      <a href="#" class="view-all-link">View all 327 →</a>
+    </div>
+
+    <div class="chap-toolbar">
+      <div class="chap-tabs">
+        <span class="chap-tab active">All</span>
+        <span class="chap-tab">Unread</span>
+        <span class="chap-tab">Bookmarked</span>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <span class="chap-search">⌕ Search chapter</span>
+        <span class="chap-sort">Newest first</span>
+      </div>
+    </div>
+
+    <div class="chap-table">
+      <div class="chap-head">
+        <span>№</span>
+        <span>Title</span>
+        <span style="text-align:right;">Pages</span>
+        <span style="text-align:right;">Released</span>
+        <span style="text-align:right;">Status</span>
+      </div>
+
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=327">
+        <span class="chap-num">327</span>
+        <div class="chap-title"><span class="vol">Vol. 37</span>The Man Named Tadaaki</div>
+        <span class="chap-pages" style="text-align:right;">22 pp</span>
+        <span class="chap-when" style="text-align:right;">Today</span>
+        <span class="chap-status new" style="justify-self:end;"><span class="d"></span>Just out</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=326">
+        <span class="chap-num">326</span>
+        <div class="chap-title"><span class="vol">Vol. 37</span>A Single Reed</div>
+        <span class="chap-pages" style="text-align:right;">20 pp</span>
+        <span class="chap-when" style="text-align:right;">3 days ago</span>
+        <span class="chap-status unread" style="justify-self:end;"><span class="d"></span>Unread</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=325">
+        <span class="chap-num">325</span>
+        <div class="chap-title"><span class="vol">Vol. 37</span>Storm Over Funashima</div>
+        <span class="chap-pages" style="text-align:right;">24 pp</span>
+        <span class="chap-when" style="text-align:right;">1 week ago</span>
+        <span class="chap-status unread" style="justify-self:end;"><span class="d"></span>Unread</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=324">
+        <span class="chap-num">324</span>
+        <div class="chap-title"><span class="vol">Vol. 36</span>The Drawn Blade</div>
+        <span class="chap-pages" style="text-align:right;">22 pp</span>
+        <span class="chap-when" style="text-align:right;">2 weeks ago</span>
+        <span class="chap-status read" style="justify-self:end;"><span class="d"></span>Read</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=323">
+        <span class="chap-num">323</span>
+        <div class="chap-title"><span class="vol">Vol. 36</span>Kojirō, Listening</div>
+        <span class="chap-pages" style="text-align:right;">22 pp</span>
+        <span class="chap-when" style="text-align:right;">3 weeks ago</span>
+        <span class="chap-status read" style="justify-self:end;"><span class="d"></span>Read</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=322">
+        <span class="chap-num">322</span>
+        <div class="chap-title"><span class="vol">Vol. 36</span>What the River Knows</div>
+        <span class="chap-pages" style="text-align:right;">20 pp</span>
+        <span class="chap-when" style="text-align:right;">1 month ago</span>
+        <span class="chap-status read" style="justify-self:end;"><span class="d"></span>Read</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=321">
+        <span class="chap-num">321</span>
+        <div class="chap-title"><span class="vol">Vol. 36</span>The Ronin's Hand</div>
+        <span class="chap-pages" style="text-align:right;">22 pp</span>
+        <span class="chap-when" style="text-align:right;">1 month ago</span>
+        <span class="chap-status read" style="justify-self:end;"><span class="d"></span>Read</span>
+      </a>
+      <a class="chap-row" href="reader.html?id=vagabond&amp;ch=320">
+        <span class="chap-num">320</span>
+        <div class="chap-title"><span class="vol">Vol. 35</span>The Long Road</div>
+        <span class="chap-pages" style="text-align:right;">22 pp</span>
+        <span class="chap-when" style="text-align:right;">2 months ago</span>
+        <span class="chap-status read" style="justify-self:end;"><span class="d"></span>Read</span>
+      </a>
+
+      <a href="#" class="chap-show-more">Show all 327 chapters →</a>
+    </div>
+  </section>
+
+  <!-- LINER NOTES -->
+  <section class="container section">
+    <div class="section-head">
+      <h3 class="section-h">Editor's Notes</h3>
+      <span style="font-size:11px; color:var(--ink-3);">From the beachRead editorial</span>
+    </div>
+    <div class="notes-grid">
+      <div class="note-card">
+        <div class="note-eb">▮ Translator · Vol. 14</div>
+        <div class="note-t">"Heaven's apprentice"</div>
+        <div class="note-body">
+          The phrase Inoue uses for Musashi's growing self-discipline — <em>tenka mui</em> — sits between "invincible" and "matchless under heaven." We've kept the more legendary English to preserve the period flavor, even though a literal translation would be flatter.
+        </div>
+      </div>
+      <div class="note-card">
+        <div class="note-eb">▮ Letterer · All chapters</div>
+        <div class="note-t">Brushwork over typography</div>
+        <div class="note-body">
+          Sound effects in this series are hand-lettered in sumi-e style. For the digital edition, we matched the brushstroke weight chapter-by-chapter rather than substituting a single display face, keeping the rhythm of Inoue's pages intact.
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATED -->
+  <section class="container section">
+    <div class="section-head">
+      <h3 class="section-h">Readers also opened</h3>
+      <a href="index.html" class="view-all-link">Back to catalog →</a>
+    </div>
+    <div class="related-row">
+      <a class="rel-item" href="series.html?id=berserk"><div class="cover cv5">B</div><div class="name">Berserk</div><div class="genre">Seinen / Dark Fantasy</div></a>
+      <a class="rel-item" href="series.html?id=vinland"><div class="cover cv7">V</div><div class="name">Vinland Saga</div><div class="genre">Seinen / Historical</div></a>
+      <a class="rel-item" href="series.html?id=kingdom"><div class="cover cv10">K</div><div class="name">Kingdom</div><div class="genre">Seinen / Epic</div></a>
+      <a class="rel-item" href="series.html?id=monster"><div class="cover cv9">M</div><div class="name">Monster</div><div class="genre">Seinen / Mystery</div></a>
+      <a class="rel-item" href="series.html?id=jojo"><div class="cover cv1">J</div><div class="name">JoJo Pt.7</div><div class="genre">Shounen / Adventure</div></a>
+      <a class="rel-item" href="series.html?id=slamdunk"><div class="cover cv8">S</div><div class="name">Slam Dunk</div><div class="genre">Shounen / Sports</div></a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <h4>Platform</h4>
+          <ul>
+            <li><a href="#">Plans &amp; Pricing</a></li>
+            <li><a href="#">Reading Features</a></li>
+            <li><a href="#">Updates &amp; Releases</a></li>
+            <li><a href="#">Supported Devices</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">News &amp; Events</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Support</h4>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact Support</a></li>
+            <li><a href="#">Community Forum</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Copyright Information</a></li>
+          </ul>
+        </div>
+        <div class="footer-col footer-brand">
+          <a class="logo" href="index.html">
+            <span class="logo-mark">b</span>
+            <span>beachRead</span>
+          </a>
+          <p class="jp-tagline">世界中の読者に最高のマンガを届ける。</p>
+          <p class="tagline">Bringing the best of manga<br/>to readers worldwide.</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 beachRead Inc. All rights reserved.</span>
+        <div class="socials">
+          <a href="#" aria-label="Instagram">◎</a>
+          <a href="#" aria-label="YouTube">▶</a>
+          <a href="#" aria-label="X">✕</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="review-bar">
+    <span>beachRead — design 03 · series</span>
+    <a href="index.html">← home</a>
+  </div>
+
+</body>
+</html>
