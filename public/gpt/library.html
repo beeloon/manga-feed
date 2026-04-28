@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library — Night Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">M</span>
+        <span class="name">manga feed</span>
+      </div>
+      <a class="nav-item" href="./">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span class="label">Home</span>
+      </a>
+      <a class="nav-item active" href="library.html">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="6" height="16" rx="1"/><rect x="14" y="4" width="6" height="16" rx="1"/></svg>
+        <span class="label">Library</span>
+      </a>
+      <a class="nav-item" href="library.html#collections">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+        <span class="label">Collections</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+        <span class="label">Updates</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 0 0-.1-1l2-1.5-2-3.4-2.4.8a7 7 0 0 0-1.7-1L14.5 3h-5l-.3 2.9a7 7 0 0 0-1.7 1l-2.4-.8-2 3.4 2 1.5a7 7 0 0 0 0 2l-2 1.5 2 3.4 2.4-.8a7 7 0 0 0 1.7 1l.3 2.9h5l.3-2.9a7 7 0 0 0 1.7-1l2.4.8 2-3.4-2-1.5a7 7 0 0 0 .1-1z"/></svg>
+        <span class="label">Settings</span>
+      </a>
+
+      <div class="sidebar-spacer"></div>
+      <div class="sidebar-foot">
+        <div class="theme-toggle">
+          <span class="label">Theme</span>
+          <div class="toggle" id="theme-toggle"></div>
+        </div>
+        <div class="user-row">
+          <div class="avatar">RD</div>
+          <div>
+            <div style="font-size:13px;color:var(--text)">Reader</div>
+            <div class="mono" style="font-size:11px;color:var(--text-3)">Level 12</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <header class="topbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search series, author, or tags...</span>
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="btn primary" id="open-tweaks">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h12"/><circle cx="18" cy="6" r="2"/><path d="M4 12h6"/><circle cx="12" cy="12" r="2"/><path d="M16 12h4"/><path d="M4 18h10"/><circle cx="16" cy="18" r="2"/><path d="M20 18h0"/></svg>
+        Tweaks
+      </button>
+    </header>
+
+    <main class="content">
+      <div class="lib-head">
+        <h1>Library</h1>
+        <span class="count">12 series</span>
+        <div class="lib-head-spacer"></div>
+        <button class="btn">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M6 12h12M10 18h4"/></svg>
+          Filter
+        </button>
+        <button class="btn">Sort: Recent ▾</button>
+        <div class="view-toggle">
+          <button class="active" title="List">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <button title="Grid">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><rect x="14" y="14" width="6" height="6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">All <span class="mono" style="font-size:11px;color:var(--text-3);margin-left:4px">12</span></div>
+        <div class="tab">Reading</div>
+        <div class="tab">Completed</div>
+        <div class="tab">On Hold</div>
+        <div class="tab">Dropped</div>
+      </div>
+
+      <table class="lib">
+        <thead>
+          <tr>
+            <th style="width:34%">Title</th>
+            <th>Author</th>
+            <th>Year</th>
+            <th>Chapters</th>
+            <th>Rating</th>
+            <th>Tags</th>
+            <th>Type</th>
+            <th>Direction</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="selected">
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="blue"><div class="mono-bg">SW</div></div>
+                <div class="text">
+                  <span class="name">Still Water</span>
+                  <span class="desc">A retired ferry captain returns to the inland sea...</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">R. Inoue</td>
+            <td class="mono muted">2023</td>
+            <td class="mono muted">47</td>
+            <td><span class="rating">★ 4.7</span></td>
+            <td class="cell-tags"><span>Slice of life</span><span>Drama</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="rust"><div class="mono-bg">LQ</div></div>
+                <div class="text">
+                  <span class="name">Lantern Quarter</span>
+                  <span class="desc">Edo, late autumn. A clerk who can read the small handwriting...</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">M. Sato</td>
+            <td class="mono muted">2024</td>
+            <td class="mono muted">12</td>
+            <td><span class="rating">★ 4.6</span></td>
+            <td class="cell-tags"><span>Mystery</span><span>Historical</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="purple"><div class="mono-bg">GB</div></div>
+                <div class="text">
+                  <span class="name">The Glassblower</span>
+                  <span class="desc">In a town where glass is both art and industry, a boy...</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">K. Hayashi</td>
+            <td class="mono muted">2022</td>
+            <td class="mono muted">86</td>
+            <td><span class="rating">★ 4.8</span></td>
+            <td class="cell-tags"><span>Drama</span><span>Coming of age</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="green"><div class="mono-bg">N8</div></div>
+                <div class="text">
+                  <span class="name">North of Eight</span>
+                  <span class="desc">A quiet research station. Eight people. No answers.</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">T. Mori</td>
+            <td class="mono muted">2024</td>
+            <td class="mono muted">8</td>
+            <td><span class="rating">★ 4.4</span></td>
+            <td class="cell-tags"><span>Sci-fi</span><span>Quiet</span></td>
+            <td class="muted">Webtoon</td>
+            <td class="mono muted">TTB</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="amber"><div class="mono-bg">SP</div></div>
+                <div class="text">
+                  <span class="name">Salt and Paper</span>
+                  <span class="desc">Recipes, routines, and the people who tried.</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">A. Fujita</td>
+            <td class="mono muted">2023</td>
+            <td class="mono muted">28</td>
+            <td><span class="rating">★ 4.3</span></td>
+            <td class="cell-tags"><span>Slice of life</span><span>Food</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="slate"><div class="mono-bg">CD</div></div>
+                <div class="text">
+                  <span class="name">City of Dusk</span>
+                  <span class="desc">Under the city that never sleeps, another one does.</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">Y. Nakamura</td>
+            <td class="mono muted">2021</td>
+            <td class="mono muted">64</td>
+            <td><span class="rating">★ 4.5</span></td>
+            <td class="cell-tags"><span>Sci-fi</span><span>Cyberpunk</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="purple"><div class="mono-bg">EB</div></div>
+                <div class="text">
+                  <span class="name">Echoes Beneath</span>
+                  <span class="desc">Sounds that should not exist. Doors that should stay shut.</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">H. Clay</td>
+            <td class="mono muted">2024</td>
+            <td class="mono muted">10</td>
+            <td><span class="rating">★ 4.2</span></td>
+            <td class="cell-tags"><span>Horror</span><span>Supernatural</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+          <tr>
+            <td>
+              <div class="cell-title-stack">
+                <div class="cover sm" data-tone="green"><div class="mono-bg">FR</div></div>
+                <div class="text">
+                  <span class="name">Field Record</span>
+                  <span class="desc">A nature journal becomes something more.</span>
+                </div>
+              </div>
+            </td>
+            <td class="muted">S. Arai</td>
+            <td class="mono muted">2022</td>
+            <td class="mono muted">36</td>
+            <td><span class="rating">★ 4.1</span></td>
+            <td class="cell-tags"><span>Adventure</span><span>Slice of life</span></td>
+            <td class="muted">Manga</td>
+            <td class="mono muted">RTL</td>
+            <td><span class="row-act">⋯</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="pager">
+        <span>Showing 1–8 of 12</span>
+        <div class="pages">
+          <button>‹</button>
+          <button class="active">1</button>
+          <button>2</button>
+          <button>›</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Tweaks drawer -->
+  <div class="drawer-mask" id="drawer-mask"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <h3>Tweaks</h3>
+      <button class="icon-btn" id="close-drawer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <h4>Appearance</h4>
+        <div class="field">
+          <label>Theme</label>
+          <div class="seg" id="theme-seg">
+            <button data-theme="light">☀</button>
+            <button class="active" data-theme="dark">☾</button>
+            <button data-theme="auto">A</button>
+          </div>
+        </div>
+      </div>
+      <div class="drawer-section">
+        <h4>Library</h4>
+        <div class="row-toggle"><span>Show covers in list</span><span class="switch on" data-toggle></span></div>
+        <div class="row-toggle"><span>Group by status</span><span class="switch" data-toggle></span></div>
+        <div class="row-toggle"><span>Compact rows</span><span class="switch" data-toggle></span></div>
+      </div>
+    </div>
+    <div class="drawer-foot"><a href="#">Reset to default</a></div>
+  </aside>
+
+  <div class="review-bar">
+    <span>Night Desk — design 04 · library</span>
+    <a href="../">← back to review</a>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    document.getElementById('theme-toggle')?.addEventListener('click', () => {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    });
+    const drawer = document.getElementById('drawer');
+    const mask = document.getElementById('drawer-mask');
+    document.getElementById('open-tweaks')?.addEventListener('click', () => { drawer.classList.add('open'); mask.classList.add('open'); });
+    function closeDrawer() { drawer.classList.remove('open'); mask.classList.remove('open'); }
+    document.getElementById('close-drawer')?.addEventListener('click', closeDrawer);
+    mask?.addEventListener('click', closeDrawer);
+    document.querySelectorAll('#theme-seg button').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#theme-seg button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      root.dataset.theme = b.dataset.theme === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : b.dataset.theme;
+    }));
+    document.querySelectorAll('.switch').forEach(s => s.addEventListener('click', () => s.classList.toggle('on')));
+    document.querySelectorAll('table.lib tbody tr').forEach(tr => {
+      tr.addEventListener('click', (e) => {
+        if (e.target.closest('.row-act')) return;
+        location.href = 'series.html';
+      });
+    });
+    document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+    }));
+  </script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manga Feed — Night Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+
+    <!-- ===== sidebar ===== -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="logo">M</span>
+        <span class="name">manga feed</span>
+      </div>
+
+      <a class="nav-item active" href="./">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/></svg>
+        <span class="label">Home</span>
+      </a>
+      <a class="nav-item" href="library.html">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="4" width="6" height="16" rx="1"/><rect x="14" y="4" width="6" height="16" rx="1"/></svg>
+        <span class="label">Library</span>
+      </a>
+      <a class="nav-item" href="library.html#collections">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg>
+        <span class="label">Collections</span>
+      </a>
+      <a class="nav-item" href="library.html#updates">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 6v6l4 2"/><circle cx="12" cy="12" r="9"/></svg>
+        <span class="label">Updates</span>
+      </a>
+      <a class="nav-item" href="#">
+        <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3h0a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8v0a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+        <span class="label">Settings</span>
+      </a>
+
+      <div class="sidebar-spacer"></div>
+
+      <div class="sidebar-foot">
+        <div class="theme-toggle">
+          <span class="label">Theme</span>
+          <div class="toggle" id="theme-toggle"></div>
+        </div>
+        <div class="user-row">
+          <div class="avatar">RD</div>
+          <div>
+            <div style="font-size:13px;color:var(--text)">Reader</div>
+            <div class="mono" style="font-size:11px;color:var(--text-3)">Level 12</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ===== topbar ===== -->
+    <header class="topbar">
+      <div class="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>Search series, author, or tags...</span>
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="topbar-spacer"></div>
+      <button class="icon-btn" title="Notifications">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9z"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+      </button>
+      <button class="btn primary" id="open-tweaks">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h12"/><circle cx="18" cy="6" r="2"/><path d="M4 12h6"/><circle cx="12" cy="12" r="2"/><path d="M16 12h4"/><path d="M4 18h10"/><circle cx="16" cy="18" r="2"/><path d="M20 18h0"/></svg>
+        Tweaks
+      </button>
+    </header>
+
+    <!-- ===== content ===== -->
+    <main class="content">
+
+      <div class="greeting">
+        <h1>Good evening, Reader.</h1>
+        <p>Pick up where you left off.</p>
+      </div>
+
+      <!-- Continue Reading -->
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Continue Reading</h2>
+          <span class="link">View all →</span>
+        </div>
+        <div class="continue-strip">
+          <button class="continue-card">
+            <div class="cover-wrap">
+              <div class="cover" data-tone="blue">
+                <div class="mono-bg">SW</div>
+                <div class="spine">STILL WATER</div>
+                <div class="meta">R. INOUE</div>
+              </div>
+            </div>
+            <div class="title">Still Water</div>
+            <div class="ch">Chapter 28</div>
+            <div class="progress">
+              <div class="progress-bar"><i style="width:82%"></i></div>
+              <span class="progress-pct">82%</span>
+            </div>
+          </button>
+
+          <button class="continue-card">
+            <div class="cover-wrap">
+              <div class="cover" data-tone="green">
+                <div class="mono-bg">N8</div>
+                <div class="spine">NORTH OF EIGHT</div>
+                <div class="meta">T. MORI</div>
+              </div>
+            </div>
+            <div class="title">North of Eight</div>
+            <div class="ch">Chapter 5</div>
+            <div class="progress">
+              <div class="progress-bar"><i style="width:42%"></i></div>
+              <span class="progress-pct">42%</span>
+            </div>
+          </button>
+
+          <button class="continue-card">
+            <div class="cover-wrap">
+              <div class="cover" data-tone="rust">
+                <div class="mono-bg">LQ</div>
+                <div class="spine">LANTERN QUARTER</div>
+                <div class="meta">M. SATO</div>
+              </div>
+            </div>
+            <div class="title">Lantern Quarter</div>
+            <div class="ch">Chapter 7</div>
+            <div class="progress">
+              <div class="progress-bar"><i style="width:71%"></i></div>
+              <span class="progress-pct">71%</span>
+            </div>
+          </button>
+
+          <button class="continue-card empty">
+            View all
+          </button>
+        </div>
+      </section>
+
+      <!-- Editor's Pick -->
+      <section class="section">
+        <div class="editorial">
+          <div>
+            <div class="eyebrow" style="margin-bottom:14px">EDITORIAL</div>
+            <p class="quote">He had not expected the harbor to be smaller. He had expected, if anything, that thirty years away would have made everything else smaller, and the harbor by contrast enormous.</p>
+            <a class="read-link" href="series.html">Read Lantern Quarter →</a>
+          </div>
+          <div class="editorial-art"></div>
+        </div>
+      </section>
+
+      <!-- Collections -->
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Collections</h2>
+          <span class="link">View all →</span>
+        </div>
+        <div class="collections">
+          <a class="collection" href="library.html">
+            <div class="collection-ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 21V7l9-4 9 4v14"/><path d="M9 21V12h6v9"/></svg>
+            </div>
+            <div>
+              <h3>Quiet Moments</h3>
+              <p>Slow stories, deep feelings.</p>
+              <span class="count">12 series</span>
+            </div>
+          </a>
+          <a class="collection" href="library.html">
+            <div class="collection-ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+            </div>
+            <div>
+              <h3>Hidden Histories</h3>
+              <p>Mystery and the past.</p>
+              <span class="count">12 series</span>
+            </div>
+          </a>
+          <a class="collection" href="library.html">
+            <div class="collection-ic">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v6"/><path d="M5 8h14l-2 12H7z"/></svg>
+            </div>
+            <div>
+              <h3>New Voices</h3>
+              <p>Fresh stories to watch.</p>
+              <span class="count">12 series</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <!-- Recently Updated -->
+      <section class="section">
+        <div class="section-head">
+          <h2 class="section-title">Recently Updated</h2>
+          <span class="link">View all →</span>
+        </div>
+        <div class="update-list">
+          <a class="update-row" href="series.html">
+            <div class="cover sm" data-tone="purple">
+              <div class="mono-bg">GB</div>
+            </div>
+            <div>
+              <div class="title">The Glassblower</div>
+              <div class="ch">Chapter 86 · 3 hours ago</div>
+            </div>
+            <span class="tag-new">New chapter</span>
+            <button class="icon-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+          </a>
+          <a class="update-row" href="series.html">
+            <div class="cover sm" data-tone="amber">
+              <div class="mono-bg">SP</div>
+            </div>
+            <div>
+              <div class="title">Salt and Paper</div>
+              <div class="ch">Chapter 28 · 1 day ago</div>
+            </div>
+            <span class="muted mono" style="font-size:11px">Bookmarked</span>
+            <button class="icon-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+          </a>
+          <a class="update-row" href="series.html">
+            <div class="cover sm" data-tone="slate">
+              <div class="mono-bg">EB</div>
+            </div>
+            <div>
+              <div class="title">Echoes Beneath</div>
+              <div class="ch">Chapter 10 · 2 days ago</div>
+            </div>
+            <span class="muted mono" style="font-size:11px">Following</span>
+            <button class="icon-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+          </a>
+          <a class="update-row" href="series.html">
+            <div class="cover sm" data-tone="green">
+              <div class="mono-bg">FR</div>
+            </div>
+            <div>
+              <div class="title">Field Record</div>
+              <div class="ch">Chapter 36 · 3 days ago</div>
+            </div>
+            <span class="muted mono" style="font-size:11px">Following</span>
+            <button class="icon-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+          </a>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Tweaks drawer (shared shell) -->
+  <div class="drawer-mask" id="drawer-mask"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <h3>Tweaks</h3>
+      <button class="icon-btn" id="close-drawer">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <h4>Appearance</h4>
+        <div class="field">
+          <label>Theme</label>
+          <div class="seg" id="theme-seg">
+            <button data-theme="light">☀</button>
+            <button class="active" data-theme="dark">☾</button>
+            <button data-theme="auto">A</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Brightness</label>
+          <span class="value">68%</span>
+        </div>
+        <input class="range" type="range" min="0" max="100" value="68" />
+        <div class="field" style="margin-top:14px">
+          <label>Contrast</label>
+          <span class="value">52%</span>
+        </div>
+        <input class="range" type="range" min="0" max="100" value="52" />
+      </div>
+
+      <div class="drawer-section">
+        <h4>Reading</h4>
+        <div class="field">
+          <label>Reading direction</label>
+          <div class="seg">
+            <button class="active">RTL</button>
+            <button>LTR</button>
+            <button>TTB</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Layout</label>
+          <div class="seg">
+            <button>1</button>
+            <button class="active">2</button>
+            <button>↕</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Page width</label>
+          <span class="value">100%</span>
+        </div>
+        <input class="range" type="range" min="0" max="100" value="100" />
+      </div>
+
+      <div class="drawer-section">
+        <h4>Advanced</h4>
+        <div class="row-toggle">
+          <span>Show gutter</span>
+          <span class="switch on" data-toggle></span>
+        </div>
+        <div class="row-toggle">
+          <span>Animate page transitions</span>
+          <span class="switch on" data-toggle></span>
+        </div>
+        <div class="row-toggle">
+          <span>Scanline grain</span>
+          <span class="switch" data-toggle></span>
+        </div>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <a href="#">Reset to default</a>
+    </div>
+  </aside>
+
+  <div class="review-bar">
+    <span>Night Desk — design 04 · dark IDE workspace</span>
+    <a href="../">← back to review</a>
+  </div>
+
+  <script>
+    // theme toggle
+    const root = document.documentElement;
+    const togglePill = document.getElementById('theme-toggle');
+    function applyTheme(t) {
+      root.setAttribute('data-theme', t === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : t);
+    }
+    togglePill?.addEventListener('click', () => {
+      applyTheme(root.dataset.theme === 'dark' ? 'light' : 'dark');
+    });
+
+    // drawer
+    const drawer = document.getElementById('drawer');
+    const mask = document.getElementById('drawer-mask');
+    document.getElementById('open-tweaks')?.addEventListener('click', () => {
+      drawer.classList.add('open'); mask.classList.add('open');
+    });
+    function closeDrawer() { drawer.classList.remove('open'); mask.classList.remove('open'); }
+    document.getElementById('close-drawer')?.addEventListener('click', closeDrawer);
+    mask?.addEventListener('click', closeDrawer);
+
+    // theme segment in drawer
+    document.querySelectorAll('#theme-seg button').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('#theme-seg button').forEach(x => x.classList.remove('active'));
+        b.classList.add('active');
+        applyTheme(b.dataset.theme);
+      });
+    });
+
+    // generic switch
+    document.querySelectorAll('.switch').forEach(s => {
+      s.addEventListener('click', () => s.classList.toggle('on'));
+    });
+
+    // search shortcut hint (no actual search)
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') e.preventDefault();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Still Water · Ch.28 — Night Desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&family=Newsreader:ital,wght@1,400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { background: #0a0c11; }
+    [data-theme="dark"] .panel-img {
+      background:
+        radial-gradient(ellipse at 50% 30%, rgba(120,140,180,0.18), transparent 60%),
+        radial-gradient(ellipse at 30% 70%, rgba(80,90,120,0.18), transparent 60%),
+        linear-gradient(180deg, #1d2230 0%, #0c1018 100%);
+    }
+  </style>
+</head>
+<body>
+  <div class="reader-shell">
+
+    <header class="reader-top">
+      <a class="btn ghost" href="series.html">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+        Back
+      </a>
+      <div style="flex:1"></div>
+      <button class="ch-pick">
+        <span><strong>Still Water</strong></span>
+        <small>Chapter 28</small>
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div style="flex:1"></div>
+      <button class="icon-btn" title="Chapters">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h12M4 12h12M4 18h8"/><path d="M20 6h0M20 12h0M20 18h0"/></svg>
+      </button>
+      <button class="icon-btn" title="Bookmark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
+      </button>
+      <button class="icon-btn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg></button>
+    </header>
+
+    <section class="reader-stage" id="stage">
+      <div class="panel-img">
+        <div class="bubble" style="top:14%; right:10%">The ferry is late tonight.</div>
+        <div class="label">P.01</div>
+      </div>
+      <div class="panel-img wide">
+        <div class="label">P.02</div>
+      </div>
+      <div class="panel-img">
+        <div class="bubble" style="bottom:18%; left:10%">But the sea remembers everything.</div>
+        <div class="bubble" style="bottom:14%; right:10%">And so do I.</div>
+        <div class="label">P.03</div>
+      </div>
+      <div class="panel-img tall">
+        <div class="bubble" style="bottom:8%; right:10%">Still water runs deep.</div>
+        <div class="label">P.04</div>
+      </div>
+      <div class="panel-img">
+        <div class="label">P.05</div>
+      </div>
+    </section>
+
+    <!-- vertical progress rail -->
+    <div class="progress-rail">
+      <span class="head" style="top:45%"></span>
+      <span class="pct" style="top:45%">45%</span>
+    </div>
+
+    <!-- floating control cluster -->
+    <div class="reader-foot">
+      <button class="icon-btn" title="Brightness">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>
+      </button>
+      <button class="icon-btn active" title="Layout">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="6" height="18"/><rect x="14" y="3" width="6" height="18"/></svg>
+      </button>
+      <button class="icon-btn" title="Page width">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <button class="icon-btn" id="open-tweaks" title="Tweaks">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h12"/><circle cx="18" cy="6" r="2"/><path d="M4 12h6"/><circle cx="12" cy="12" r="2"/><path d="M16 12h4"/><path d="M4 18h10"/><circle cx="16" cy="18" r="2"/><path d="M20 18h0"/></svg>
+      </button>
+      <span class="pages-ind" id="pages-ind">14 / 32</span>
+      <button class="icon-btn" title="Fullscreen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9V3h6"/><path d="M21 9V3h-6"/><path d="M3 15v6h6"/><path d="M21 15v6h-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Tweaks drawer -->
+  <div class="drawer-mask" id="drawer-mask"></div>
+  <aside class="drawer" id="drawer">
+    <div class="drawer-head">
+      <h3>Tweaks</h3>
+      <button class="icon-btn" id="close-drawer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </div>
+    <div class="drawer-body">
+      <div class="drawer-section">
+        <h4>Appearance</h4>
+        <div class="field">
+          <label>Theme</label>
+          <div class="seg" id="theme-seg">
+            <button data-theme="light">☀</button>
+            <button class="active" data-theme="dark">☾</button>
+            <button data-theme="auto">A</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Brightness</label>
+          <span class="value" id="b-val">68%</span>
+        </div>
+        <input class="range" id="b-range" type="range" min="0" max="100" value="68" />
+        <div class="field" style="margin-top:14px">
+          <label>Contrast</label>
+          <span class="value" id="c-val">52%</span>
+        </div>
+        <input class="range" id="c-range" type="range" min="0" max="100" value="52" />
+      </div>
+
+      <div class="drawer-section">
+        <h4>Reading</h4>
+        <div class="field">
+          <label>Reading direction</label>
+          <div class="seg">
+            <button class="active">RTL</button>
+            <button>LTR</button>
+            <button>TTB</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Layout</label>
+          <div class="seg">
+            <button>1</button>
+            <button class="active">2</button>
+            <button>↕</button>
+          </div>
+        </div>
+        <div class="field">
+          <label>Page width</label>
+          <span class="value">100%</span>
+        </div>
+        <input class="range" type="range" min="40" max="100" value="100" />
+      </div>
+
+      <div class="drawer-section">
+        <h4>Advanced</h4>
+        <div class="row-toggle"><span>Show gutter</span><span class="switch on" data-toggle></span></div>
+        <div class="row-toggle"><span>Animate page transitions</span><span class="switch on" data-toggle></span></div>
+        <div class="row-toggle"><span>Scanline grain</span><span class="switch" data-toggle></span></div>
+      </div>
+    </div>
+    <div class="drawer-foot"><a href="#">Reset to default</a></div>
+  </aside>
+
+  <div class="review-bar">
+    <span>Night Desk — design 04 · reader</span>
+    <a href="../">← back to review</a>
+  </div>
+
+  <script>
+    const root = document.documentElement;
+    const drawer = document.getElementById('drawer');
+    const mask = document.getElementById('drawer-mask');
+    document.getElementById('open-tweaks')?.addEventListener('click', () => { drawer.classList.add('open'); mask.classList.add('open'); });
+    function closeDrawer() { drawer.classList.remove('open'); mask.classList.remove('open'); }
+    document.getElementById('close-drawer')?.addEventListener('click', closeDrawer);
+    mask?.addEventListener('click', closeDrawer);
+    document.querySelectorAll('#theme-seg button').forEach(b => b.addEventListener('click', () => {
+      document.querySelectorAll('#theme-seg button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      root.dataset.theme = b.dataset.theme === 'auto' ? (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : b.dataset.theme;
+    }));
+    document.querySelectorAll('.switch').forEach(s => s.addEventListener('click', () => s.classList.toggle('on')));
+
+    // brightness/contrast affect stage filter
+    const stage = document.getElementById('stage');
+    function applyFilters() {
+      const b = document.getElementById('b-range').value;
+      const c = document.getElementById('c-range').value;
+      document.getElementById('b-val').textContent = b + '%';
+      document.getElementById('c-val').textContent = c + '%';
+      stage.style.filter = `brightness(${0.5 + b/100}) contrast(${0.6 + c/100})`;
+    }
+    document.getElementById('b-range').addEventListener('input', applyFilters);
+    document.getElementById('c-range').addEventListener('input', applyFilters);
+    applyFilters();
+
+    // progress rail tracks scroll
+    const rail = document.querySelector('.progress-rail .head');
+    const railPct = document.querySelector('.progress-rail .pct');
+    const indicator = document.getElementById('pages-ind');
+    window.addEventListener('scroll', () => {
+      const max = document.body.scrollHeight - window.innerHeight;
+      const p = Math.max(0, Math.min(1, window.scrollY / Math.max(1, max)));
+      rail.style.top = (p * 100) + '%';
+      railPct.style.top = (p * 100) + '%';
+      railPct.textContent = Math.round(p * 100) + '%';
+      const page = Math.max(1, Math.min(32, Math.round(p * 32)));
+      indicator.textContent = page + ' / 32';
+    }, { passive: true });
+  </script>
+</body>
+</html>
