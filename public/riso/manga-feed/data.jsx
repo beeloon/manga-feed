@@ -1,7 +1,5 @@
-// Real manga catalog. Source: /assets/manga/manifest.json (loaded by index.html).
-// Riso-flavored ink-block fallback colors keep the painted treatment when manifest missing.
-
-const MANIFEST = window.MANGA_MANIFEST || {};
+// Real manga catalog. Source: /assets/manga/manifest.json (fetched by index.html
+// before render; window.buildMangaCatalog() is then called).
 
 const ID_ORDER = [
   "berserk", "jojo", "vagabond", "onepiece", "monster",
@@ -25,8 +23,8 @@ const RISO_OVERRIDES = {
   gachiakuta:     { cover: "#1e2820", accent: "#5a9870", direction: "RTL", featured: false },
 };
 
-function buildEntry(id) {
-  const m = MANIFEST[id] || {};
+function buildRisoEntry(id, manifest) {
+  const m = manifest[id] || {};
   const ovr = RISO_OVERRIDES[id] || { cover: "#2a2622", accent: "#d04a3a", direction: "RTL" };
   return {
     id,
@@ -50,28 +48,25 @@ function buildEntry(id) {
   };
 }
 
-const MANGA_CATALOG = ID_ORDER.map(buildEntry);
-
-const COLLECTIONS = [
-  { id: "epic",    title: "Long-running epics",       subtitle: "Sit down for a while", ids: ["onepiece", "berserk", "kingdom", "vagabond"] },
-  { id: "drama",   title: "Quiet drama, loud panels", subtitle: "Seinen highlights",    ids: ["monster", "vinland", "vagabond", "fma"] },
-  { id: "ongoing", title: "Updated this week",        subtitle: "Fresh chapters",       ids: ["gachiakuta", "gokuragukai", "ghost-fixers", "grandblue"] },
-];
-
-const CONTINUE_READING = [
-  { id: "vagabond", chapter: 312,  page: 9,  ofPages: 18, when: "2 hours ago" },
-  { id: "berserk",  chapter: 364,  page: 14, ofPages: 19, when: "Yesterday"  },
-  { id: "onepiece", chapter: 1100, page: 6,  ofPages: 18, when: "3 days ago" },
-];
-
-const EDITORIAL_PICK = {
-  id: "vagabond",
-  pull: "Strength is not in the sword. Strength is in not needing to draw it.",
-  byline: "Editor's pick · Issue 14",
+window.buildMangaCatalog = function () {
+  const manifest = window.MANGA_MANIFEST || {};
+  window.MANGA_CATALOG = ID_ORDER.map((id) => buildRisoEntry(id, manifest));
+  window.COLLECTIONS = [
+    { id: "epic",    title: "Long-running epics",       subtitle: "Sit down for a while", ids: ["onepiece", "berserk", "kingdom", "vagabond"] },
+    { id: "drama",   title: "Quiet drama, loud panels", subtitle: "Seinen highlights",    ids: ["monster", "vinland", "vagabond", "fma"] },
+    { id: "ongoing", title: "Updated this week",        subtitle: "Fresh chapters",       ids: ["gachiakuta", "gokuragukai", "ghost-fixers", "grandblue"] },
+  ];
+  window.CONTINUE_READING = [
+    { id: "vagabond", chapter: 312,  page: 9,  ofPages: 18, when: "2 hours ago" },
+    { id: "berserk",  chapter: 364,  page: 14, ofPages: 19, when: "Yesterday"  },
+    { id: "onepiece", chapter: 1100, page: 6,  ofPages: 18, when: "3 days ago" },
+  ];
+  window.EDITORIAL_PICK = {
+    id: "vagabond",
+    pull: "Strength is not in the sword. Strength is in not needing to draw it.",
+    byline: "Editor's pick · Issue 14",
+  };
+  window.findManga = (id) => window.MANGA_CATALOG.find(m => m.id === id);
 };
 
-window.MANGA_CATALOG = MANGA_CATALOG;
-window.COLLECTIONS = COLLECTIONS;
-window.CONTINUE_READING = CONTINUE_READING;
-window.EDITORIAL_PICK = EDITORIAL_PICK;
-window.findManga = (id) => MANGA_CATALOG.find(m => m.id === id);
+window.buildMangaCatalog();

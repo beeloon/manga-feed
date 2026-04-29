@@ -533,9 +533,13 @@
   };
 
   const setBg = (el, src) => {
-    el.style.backgroundImage = `url(${src})`;
-    el.style.backgroundSize = 'cover';
-    el.style.backgroundPosition = 'center';
+    // Strip cv* classes so the .cv1..10 `background: linear-gradient(...) !important`
+    // rule in styles.css doesn't override the inline cover image.
+    Array.from(el.classList).forEach((c) => { if (/^cv\d+$/.test(c)) el.classList.remove(c); });
+    el.style.setProperty('background-image', `url(${src})`, 'important');
+    el.style.setProperty('background-size', 'cover', 'important');
+    el.style.setProperty('background-position', 'center', 'important');
+    el.style.setProperty('background-color', 'transparent', 'important');
     el.style.color = 'transparent';
     el.textContent = '';
   };

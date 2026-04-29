@@ -711,14 +711,20 @@
   const entry = manifest[id];
   if (!entry) return;
 
+  const setBg = (el, src) => {
+    // Strip cv* / cv-vagabond classes so existing `background: ... !important`
+    // rules don't override the cover image.
+    Array.from(el.classList).forEach((c) => { if (/^cv/.test(c)) el.classList.remove(c); });
+    el.style.setProperty('background-image', `url(${src})`, 'important');
+    el.style.setProperty('background-size', 'cover', 'important');
+    el.style.setProperty('background-position', 'center', 'important');
+    el.style.setProperty('background-color', 'transparent', 'important');
+    el.style.color = 'transparent';
+    el.textContent = '';
+  };
+
   const coverEl = document.querySelector('.series-cover');
-  if (coverEl && entry.paths?.cover) {
-    coverEl.style.backgroundImage = `url(${entry.paths.cover})`;
-    coverEl.style.backgroundSize = 'cover';
-    coverEl.style.backgroundPosition = 'center';
-    coverEl.style.color = 'transparent';
-    coverEl.textContent = '';
-  }
+  if (coverEl && entry.paths?.cover) setBg(coverEl, entry.paths.cover);
 
   const titleEl = document.querySelector('.series-title');
   if (titleEl) titleEl.textContent = entry.englishTitle || entry.title || id;
@@ -736,13 +742,7 @@
     if (!m) return;
     const e = manifest[m[1]];
     const tile = row.querySelector('.cover');
-    if (tile && e?.paths?.cover) {
-      tile.style.backgroundImage = `url(${e.paths.cover})`;
-      tile.style.backgroundSize = 'cover';
-      tile.style.backgroundPosition = 'center';
-      tile.style.color = 'transparent';
-      tile.textContent = '';
-    }
+    if (tile && e?.paths?.cover) setBg(tile, e.paths.cover);
   });
 })();
 </script>
