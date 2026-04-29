@@ -971,25 +971,47 @@ function Rz2Series({ id, onOpenManga, onNavigate }) {
 function Rz2Reader({ id, onBack, onNavigate }) {
   const m = window.findManga(id);
   const { useState, useEffect } = React;
-  const [spreadIdx, setSpreadIdx] = useState(4); // pages 9-10
+  const [mode, setMode] = useState("spread"); // spread | single | scroll
+  const [pageIdx, setPageIdx] = useState(8); // 0-based, pages 9-10 in spread
   const totalPages = m.pages;
   const totalSpreads = Math.ceil(totalPages / 2);
+  const panels = m.panels || [];
+
+  // For backward-compat with existing spread render, derive spread index + page numbers.
+  const spreadIdx = Math.floor(pageIdx / 2);
   const left = spreadIdx * 2 + 1;
   const right = left + 1;
+  const setSpreadIdx = (v) => {
+    const next = typeof v === "function" ? v(spreadIdx) : v;
+    setPageIdx(Math.max(0, Math.min(totalPages - 1, next * 2)));
+  };
+
+  const step = mode === "spread" ? 2 : 1;
+  const advance = () => setPageIdx((v) => Math.min(totalPages - 1, v + step));
+  const back    = () => setPageIdx((v) => Math.max(0, v - step));
 
   useEffect(() => {
+    if (mode === "scroll") return;
     const onKey = (e) => {
-      if (e.key === "ArrowLeft")  setSpreadIdx((v) => Math.max(0, v - 1));
-      if (e.key === "ArrowRight") setSpreadIdx((v) => Math.min(totalSpreads - 1, v + 1));
+      if (e.key === "ArrowLeft")  back();
+      if (e.key === "ArrowRight") advance();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [totalSpreads]);
+  }, [mode, totalPages]);
 
   const captions = [
     "exterior. dawn. the harbor wakes.",
     "interior. the captain's hands, in light.",
   ];
+
+  const modeBtn = (val, label) => (
+    <button
+      className={`rz2-btn outline${mode === val ? " curr" : ""}`}
+      style={mode === val ? { background: "#0e1a36", color: "#f3ead9" } : {}}
+      onClick={() => setMode(val)}
+    >{label}</button>
+  );
 
   return (
     <div className="rz2 rz2-reader">
@@ -1005,6 +1027,44 @@ function Rz2Reader({ id, onBack, onNavigate }) {
         <span>P. {left}–{right} / {totalPages}</span>
       </div>
 
+      <div style={{ display: "flex", gap: 6, padding: "6px 0 10px" }}>
+        {modeBtn("spread", "▯▯ SPREAD")}
+        {modeBtn("single", "▯ SINGLE")}
+        {modeBtn("scroll", "⇣ SCROLL")}
+      </div>
+
+      {mode === "scroll" && (
+        <div className="rz2-scroll" style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: "78vh", overflowY: "auto", padding: "8px 0" }}>
+          {Array.from({ length: totalPages }).map((_, i) => {
+            const src = panels[i % (panels.length || 1)];
+            return (
+              <div key={i} className="rz2-page" style={{ position: "relative", overflow: "hidden", aspectRatio: "2/3" }}>
+                {src && (
+                  <img src={src} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", mixBlendMode: "multiply", opacity: 0.85, zIndex: 0 }} onError={(e)=>{e.currentTarget.style.display='none';}} />
+                )}
+                <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(i+1).padStart(2,'0')} —</div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {mode === "single" && (
+        <div className="rz2-spread" style={{ gridTemplateColumns: "1fr" }}>
+          <div className="rz2-page" style={{ overflow: "hidden", maxWidth: 520, margin: "0 auto" }}>
+            {panels[pageIdx % (panels.length || 1)] && (
+              <img src={panels[pageIdx % (panels.length || 1)]} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", mixBlendMode: "multiply", opacity: 0.85, zIndex: 0 }} onError={(e)=>{e.currentTarget.style.display='none';}} />
+            )}
+            <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(pageIdx+1).padStart(2,'0')} —</div>
+            {!panels.length && (
+              <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {pageIdx+1} ARTWORK ]</div>
+            )}
+            <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[pageIdx % 2]} — single page</div>
+          </div>
+        </div>
+      )}
+
+      {mode === "spread" && (
       <div className="rz2-spread">
         <div className="rz2-page" style={{ overflow: "hidden" }}>
           {m.panels && m.panels[(left - 1) % (m.panels.length || 1)] && (
@@ -1055,21 +1115,24 @@ function Rz2Reader({ id, onBack, onNavigate }) {
           <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[1]} — riso blue, second pass</div>
         </div>
       </div>
+      )}
 
+      {mode !== "scroll" && (
       <div className="rz2-thumbs">
-        <div className="rz2-thumbs-l">SPREAD<br/>{spreadIdx+1}/{totalSpreads}</div>
-        {Array.from({ length: Math.min(totalSpreads, 14) }).map((_, i) => (
+        <div className="rz2-thumbs-l">{mode === "spread" ? "SPREAD" : "PAGE"}<br/>{mode === "spread" ? `${spreadIdx+1}/${totalSpreads}` : `${pageIdx+1}/${totalPages}`}</div>
+        {Array.from({ length: Math.min(mode === "spread" ? totalSpreads : totalPages, 14) }).map((_, i) => (
           <div
             key={i}
-            className={`rz2-thumb${i === spreadIdx ? ' curr' : ''}`}
-            onClick={() => setSpreadIdx(i)}
+            className={`rz2-thumb${(mode === "spread" ? i === spreadIdx : i === pageIdx) ? ' curr' : ''}`}
+            onClick={() => mode === "spread" ? setSpreadIdx(i) : setPageIdx(i)}
           >
-            {i*2+1}
+            {mode === "spread" ? i*2+1 : i+1}
           </div>
         ))}
-        <button className="rz2-btn outline" style={{marginLeft:'auto'}} disabled={spreadIdx === 0} onClick={() => setSpreadIdx(Math.max(0, spreadIdx-1))}>◂ PREV</button>
-        <button className="rz2-btn outline" disabled={spreadIdx >= totalSpreads-1} onClick={() => setSpreadIdx(Math.min(totalSpreads-1, spreadIdx+1))}>NEXT ▸</button>
+        <button className="rz2-btn outline" style={{marginLeft:'auto'}} disabled={pageIdx === 0} onClick={back}>◂ PREV</button>
+        <button className="rz2-btn outline" disabled={pageIdx >= totalPages-1} onClick={advance}>NEXT ▸</button>
       </div>
+      )}
 
       <div className="rz2-r-liner">
         <div className="rz2-r-liner-eb">

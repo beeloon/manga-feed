@@ -482,9 +482,9 @@
         </div>
         <div class="reader-tools">
           <div class="layout-group" role="tablist" aria-label="Layout">
-            <span class="layout-tab">Single</span>
-            <span class="layout-tab active">Double</span>
-            <span class="layout-tab">Vertical</span>
+            <span class="layout-tab" data-layout="single">Single</span>
+            <span class="layout-tab active" data-layout="double">Double</span>
+            <span class="layout-tab" data-layout="vertical">Vertical</span>
           </div>
           <span class="tool-divider"></span>
           <button class="tool" id="open-chapters" aria-label="Chapters">☰</button>
@@ -734,17 +734,100 @@
     if (totEl) totEl.textContent = String(TOTAL);
   };
 
+  // Layout: double (default) | single | vertical
+  let layout = 'double';
+  const stage = document.querySelector('.reader-stage');
+  const spreadEl = document.querySelector('.spread');
+  const leftPage = document.querySelector('.page.left');
+  const rightPage = document.querySelector('.page.right');
+
+  // Vertical container — built lazily, reused.
+  let verticalEl = null;
+  const buildVertical = () => {
+    const wrap = document.createElement('div');
+    wrap.className = 'reader-vertical';
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-height:78vh;overflow-y:auto;padding:18px 0;';
+    for (let i = 0; i < TOTAL; i++) {
+      const card = document.createElement('div');
+      card.style.cssText = 'position:relative;width:min(680px,90%);aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:#1a1d2b;box-shadow:0 12px 40px rgba(0,0,0,0.4);';
+      const img = document.createElement('img');
+      img.src = panels[i % panels.length];
+      img.alt = '';
+      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      img.onerror = () => { img.style.display = 'none'; };
+      const label = document.createElement('div');
+      label.textContent = String(i + 1).padStart(2, '0');
+      label.style.cssText = 'position:absolute;bottom:12px;left:14px;color:rgba(255,248,232,0.8);font-family:ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;background:rgba(0,0,0,0.4);padding:4px 8px;border-radius:3px;';
+      card.appendChild(img);
+      card.appendChild(label);
+      wrap.appendChild(card);
+    }
+    return wrap;
+  };
+
   const next = () => { spread = (spread + 1) % totalSpreads; renderSpread(); };
   const prev = () => { spread = (spread - 1 + totalSpreads) % totalSpreads; renderSpread(); };
 
+  const renderSingle = () => {
+    // In single, advance one panel at a time. spread state is reused as page index.
+    const idx = spread % panels.length;
+    pageArts[0]?.querySelector('img').setAttribute('src', panels[idx]);
+    if (pageNums[0]) pageNums[0].textContent = String(idx + 1).padStart(2, '0');
+    if (counter) counter.textContent = String(idx + 1).padStart(2, '0');
+    if (totEl) totEl.textContent = String(TOTAL);
+  };
+
+  const applyLayout = (next) => {
+    layout = next;
+    document.querySelectorAll('.layout-tab').forEach((t) => {
+      t.classList.toggle('active', t.getAttribute('data-layout') === next);
+    });
+    if (next === 'vertical') {
+      if (!verticalEl) verticalEl = buildVertical();
+      if (spreadEl) spreadEl.style.display = 'none';
+      if (!stage.contains(verticalEl)) stage.appendChild(verticalEl);
+      verticalEl.style.display = '';
+      // Hide edge controls in vertical mode.
+      document.querySelectorAll('.stage-edge').forEach((e) => { e.style.display = 'none'; });
+    } else {
+      if (verticalEl) verticalEl.style.display = 'none';
+      if (spreadEl) spreadEl.style.display = '';
+      document.querySelectorAll('.stage-edge').forEach((e) => { e.style.display = ''; });
+      if (next === 'single') {
+        if (rightPage) rightPage.style.display = 'none';
+        spread = spread % panels.length;
+        renderSingle();
+      } else { // double
+        if (rightPage) rightPage.style.display = '';
+        spread = Math.floor(spread / 2);
+        renderSpread();
+      }
+    }
+  };
+
+  document.querySelectorAll('.layout-tab').forEach((tab) => {
+    tab.addEventListener('click', () => applyLayout(tab.getAttribute('data-layout')));
+  });
+
+  const advance = () => {
+    if (layout === 'vertical') return;
+    if (layout === 'single') { spread = (spread + 1) % panels.length; renderSingle(); }
+    else { next(); }
+  };
+  const goBack = () => {
+    if (layout === 'vertical') return;
+    if (layout === 'single') { spread = (spread - 1 + panels.length) % panels.length; renderSingle(); }
+    else { prev(); }
+  };
+
   // Existing decorative edges become real triggers.
-  document.getElementById('next-edge')?.addEventListener('click', next);
-  document.getElementById('prev-edge')?.addEventListener('click', prev);
+  document.getElementById('next-edge')?.addEventListener('click', advance);
+  document.getElementById('prev-edge')?.addEventListener('click', goBack);
 
   // Arrow keys. RTL convention: ArrowLeft advances (next), ArrowRight goes back.
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowLeft')  { next(); }
-    if (e.key === 'ArrowRight') { prev(); }
+    if (e.key === 'ArrowLeft')  { advance(); }
+    if (e.key === 'ArrowRight') { goBack(); }
   });
 
   renderSpread();
