@@ -1034,15 +1034,14 @@ function Rz2Reader({ id, onBack, onNavigate }) {
       </div>
 
       {mode === "scroll" && (
-        <div className="rz2-scroll" style={{ display: "flex", flexDirection: "column", gap: 12, maxHeight: "78vh", overflowY: "auto", padding: "8px 0" }}>
+        <div className="rz2-scroll" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 12, maxHeight: "calc(100vh - 200px)", overflowY: "auto", padding: "8px 0" }}>
           {Array.from({ length: totalPages }).map((_, i) => {
             const src = panels[i % (panels.length || 1)];
             return (
-              <div key={i} className="rz2-page" style={{ position: "relative", overflow: "hidden", aspectRatio: "2/3" }}>
+              <div key={i} className="rz2-page" style={{ position: "relative", overflow: "hidden", width: "min(820px, 92%)", display: "flex", justifyContent: "center", background: "transparent", flex: "0 0 auto", aspectRatio: "auto" }}>
                 {src && (
-                  <img src={src} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", mixBlendMode: "multiply", opacity: 0.85, zIndex: 0 }} onError={(e)=>{e.currentTarget.style.display='none';}} />
+                  <img src={src} alt="" loading="lazy" style={{ display: "block", width: "100%", height: "auto" }} onError={(e)=>{e.currentTarget.style.display='none';}} />
                 )}
-                <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(i+1).padStart(2,'0')} —</div>
               </div>
             );
           })}
@@ -1051,68 +1050,44 @@ function Rz2Reader({ id, onBack, onNavigate }) {
 
       {mode === "single" && (
         <div className="rz2-spread" style={{ gridTemplateColumns: "1fr" }}>
-          <div className="rz2-page" style={{ overflow: "hidden", maxWidth: 520, margin: "0 auto" }}>
+          <div className="rz2-page" style={{ overflow: "hidden", maxWidth: 720, margin: "0 auto", display: "flex", justifyContent: "center", aspectRatio: "auto", background: "transparent", backgroundImage: "none", padding: 0, border: 0 }}>
             {panels[pageIdx % (panels.length || 1)] && (
-              <img src={panels[pageIdx % (panels.length || 1)]} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", mixBlendMode: "multiply", opacity: 0.85, zIndex: 0 }} onError={(e)=>{e.currentTarget.style.display='none';}} />
+              <img src={panels[pageIdx % (panels.length || 1)]} alt="" style={{ display: "block", width: "100%", height: "auto" }} onError={(e)=>{e.currentTarget.style.display='none';}} />
             )}
-            <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(pageIdx+1).padStart(2,'0')} —</div>
             {!panels.length && (
               <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {pageIdx+1} ARTWORK ]</div>
             )}
-            <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[pageIdx % 2]} — single page</div>
           </div>
         </div>
       )}
 
       {mode === "spread" && (
       <div className="rz2-spread">
-        <div className="rz2-page" style={{ overflow: "hidden" }}>
+        <div className="rz2-page" style={{ overflow: "hidden", background: "transparent", display: "flex", justifyContent: "center", alignItems: "center", aspectRatio: "auto" }}>
           {m.panels && m.panels[(left - 1) % (m.panels.length || 1)] && (
             <img
               src={m.panels[(left - 1) % (m.panels.length || 1)]}
               alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                mixBlendMode: "multiply",
-                opacity: 0.85,
-                zIndex: 0,
-              }}
+              style={{ display: "block", width: "100%", height: "auto" }}
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
           )}
-          <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(left).padStart(2,'0')} —</div>
           {!m.panels?.length && (
             <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {left} ARTWORK ]<br/>{captions[0].toUpperCase()}</div>
           )}
-          <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[0]} — riso pink, single layer</div>
         </div>
-        <div className="rz2-page" style={{ overflow: "hidden" }}>
+        <div className="rz2-page" style={{ overflow: "hidden", background: "transparent", display: "flex", justifyContent: "center", alignItems: "center", aspectRatio: "auto" }}>
           {m.panels && m.panels[(right - 1) % (m.panels.length || 1)] && (
             <img
               src={m.panels[(right - 1) % (m.panels.length || 1)]}
               alt=""
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-                mixBlendMode: "multiply",
-                opacity: 0.85,
-                zIndex: 0,
-              }}
+              style={{ display: "block", width: "100%", height: "auto" }}
               onError={(e) => { e.currentTarget.style.display = "none"; }}
             />
           )}
-          <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(right).padStart(2,'0')} —</div>
           {!m.panels?.length && (
             <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {right} ARTWORK ]<br/>{captions[1].toUpperCase()}</div>
           )}
-          <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[1]} — riso blue, second pass</div>
         </div>
       </div>
       )}

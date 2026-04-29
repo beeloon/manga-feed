@@ -40,12 +40,13 @@ function buildFolioEntry(id, manifest) {
     cover: ovr.cover,
     coverImg: m.paths?.cover || null,
     bannerImg: m.paths?.banner || null,
-    panels: m.paths?.panels || [],
+    panels: (m.chapter1?.pages?.length ? m.chapter1.pages : (m.paths?.panels || [])),
+    chapter1: m.chapter1 || null,
     accent: ovr.accent,
     synopsis: m.synopsis || "",
     featured: !!ovr.featured,
     rating: 4.5,
-    pages: 18,
+    pages: m.chapter1?.pages?.length || 18,
   };
 }
 

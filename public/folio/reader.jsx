@@ -4,9 +4,42 @@
 const { useState: useStateReader, useEffect: useEffectReader, useRef: useRefReader, useCallback: useCallbackReader } = React;
 
 function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side, panelImg }) {
-  // Solid warm-toned page with page number — per user spec.
+  // Real chapter pages now drive the reader. When an image is present, show only
+  // the image (no decorative page-number/"of N" overlay). Without an image we
+  // fall back to the original placeholder treatment.
   const tone = baseColor;
   const aspect = mode === "vertical" ? "1/1.4" : "1/1.5";
+  if (panelImg) {
+    return (
+      <div
+        className="reader-page reader-page--real"
+        style={{
+          background: "#1a1a1a",
+          aspectRatio: mode === "vertical" ? "auto" : aspect,
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          overflow: "hidden",
+        }}
+      >
+        <img
+          src={panelImg}
+          alt=""
+          loading="lazy"
+          style={{
+            display: "block",
+            maxWidth: "100%",
+            maxHeight: "100%",
+            width: mode === "vertical" ? "100%" : "auto",
+            height: mode === "vertical" ? "auto" : "100%",
+            objectFit: "contain",
+          }}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+      </div>
+    );
+  }
   return (
     <div
       className="reader-page"
@@ -16,22 +49,6 @@ function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side, panelI
         position: "relative",
       }}
     >
-      {panelImg && (
-        <img
-          src={panelImg}
-          alt=""
-          className="reader-page-panel"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            zIndex: 0,
-          }}
-          onError={(e) => { e.currentTarget.style.display = "none"; }}
-        />
-      )}
       <div
         className="reader-page-inner"
         style={{
@@ -51,7 +68,6 @@ function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side, panelI
       {side && (
         <div className="reader-page-side">{side}</div>
       )}
-      {/* faint hairline frame to suggest a panel composition */}
       <div className="reader-frame-hint" style={{ borderColor: accent }} />
     </div>
   );
@@ -66,6 +82,10 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
   const [showNotes, setShowNotes] = useStateReader(false);
   const [zoom, setZoom] = useStateReader(100);
   const [bookmarkedPages, setBookmarkedPages] = useStateReader(new Set([3, 7]));
+  // In-reader layout override. Initialized from the tweaks panel prop, but the
+  // user can switch single/double/vertical from the reader chrome itself.
+  const [layoutMode, setLayoutMode] = useStateReader(layout || "double");
+  useEffectReader(() => { setLayoutMode(layout || "double"); }, [layout]);
   const total = manga.pages;
   const verticalRef = useRefReader(null);
 
@@ -105,14 +125,14 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
   });
 
   const nextPage = () => {
-    if (layout === "double") {
+    if (layoutMode === "double") {
       setPage((p) => Math.min(total, p + 2));
     } else {
       setPage((p) => Math.min(total, p + 1));
     }
   };
   const prevPage = () => {
-    if (layout === "double") {
+    if (layoutMode === "double") {
       setPage((p) => Math.max(1, p - 2));
     } else {
       setPage((p) => Math.max(1, p - 1));
@@ -127,8 +147,8 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
     });
   };
 
-  const isVertical = layout === "vertical";
-  const isDouble = layout === "double";
+  const isVertical = layoutMode === "vertical";
+  const isDouble = layoutMode === "double";
 
   // For vertical, track scroll for the progress
   const [verticalProgress, setVerticalProgress] = useStateReader(0);
@@ -170,6 +190,30 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
           </div>
         </div>
         <div className="reader-top-right">
+          <div className="reader-layout-switch" style={{ display: "flex", gap: 4, marginRight: 8, padding: 2, borderRadius: 6, background: "rgba(0,0,0,0.06)" }}>
+            {[
+              { v: "single",   label: "Single" },
+              { v: "double",   label: "Double" },
+              { v: "vertical", label: "Scroll" },
+            ].map((opt) => (
+              <button
+                key={opt.v}
+                onClick={() => setLayoutMode(opt.v)}
+                title={`${opt.label} layout`}
+                style={{
+                  border: "none",
+                  background: layoutMode === opt.v ? "var(--accent)" : "transparent",
+                  color: layoutMode === opt.v ? "#fff" : "inherit",
+                  padding: "4px 10px",
+                  borderRadius: 4,
+                  fontSize: 11,
+                  letterSpacing: "0.04em",
+                  fontFamily: "var(--font-mono)",
+                  cursor: "pointer",
+                }}
+              >{opt.label}</button>
+            ))}
+          </div>
           <button className="reader-icon-btn" onClick={() => setShowChapters((v) => !v)} title="Chapters">
             ☰
           </button>

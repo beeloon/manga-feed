@@ -694,9 +694,10 @@
     if (r.ok) manifest = await r.json();
   } catch {}
   const entry = manifest[id];
-  if (!entry?.paths?.panels?.length) return;
-
-  const panels = entry.paths.panels;
+  const realPages = entry?.chapter1?.pages || [];
+  const fallbackPanels = entry?.paths?.panels || [];
+  const panels = realPages.length ? realPages : fallbackPanels;
+  if (!panels.length) return;
   const pageArts = Array.from(document.querySelectorAll('.page-art'));
   const pageNums = Array.from(document.querySelectorAll('.page-num'));
   const counter  = document.querySelector('.page-counter .cur');
@@ -712,11 +713,17 @@
     el.innerHTML = '';
     const img = document.createElement('img');
     img.alt = '';
-    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#0e1a36;';
     img.onerror = () => { img.style.display = 'none'; };
     el.appendChild(img);
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
   });
+
+  // Progress bar — bind .progress-fill width to current page percentage.
+  const progressFill = document.querySelector('.progress-fill');
+  const setProgress = (pct) => {
+    if (progressFill) progressFill.style.width = `${Math.max(0, Math.min(100, pct))}%`;
+  };
 
   // Page order: in RTL spreads, page-art[0] is the LEFT page (chronologically AFTER right).
   // For our purposes panels[(spread*2 + 1)] sits on the left, panels[spread*2] on the right.
@@ -732,6 +739,7 @@
     if (pageNums[1]) pageNums[1].textContent = String(r).padStart(2, '0');
     if (counter) counter.textContent = `${String(r).padStart(2, '0')}–${String(l).padStart(2, '0')}`;
     if (totEl) totEl.textContent = String(TOTAL);
+    setProgress(((spread + 1) / Math.max(1, totalSpreads)) * 100);
   };
 
   // Layout: double (default) | single | vertical
@@ -746,22 +754,24 @@
   const buildVertical = () => {
     const wrap = document.createElement('div');
     wrap.className = 'reader-vertical';
-    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-height:78vh;overflow-y:auto;padding:18px 0;';
+    wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:14px;width:100%;max-height:calc(100vh - 160px);overflow-y:auto;padding:18px 0;margin:0 auto;';
     for (let i = 0; i < TOTAL; i++) {
       const card = document.createElement('div');
-      card.style.cssText = 'position:relative;width:min(680px,90%);aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:#1a1d2b;box-shadow:0 12px 40px rgba(0,0,0,0.4);';
+      card.style.cssText = 'position:relative;width:min(900px,92vw);border-radius:6px;overflow:hidden;background:#0e1a36;box-shadow:0 12px 40px rgba(0,0,0,0.4);display:flex;justify-content:center;flex:0 0 auto;';
       const img = document.createElement('img');
       img.src = panels[i % panels.length];
       img.alt = '';
-      img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+      img.loading = 'lazy';
+      img.style.cssText = 'display:block;width:100%;height:auto;';
       img.onerror = () => { img.style.display = 'none'; };
-      const label = document.createElement('div');
-      label.textContent = String(i + 1).padStart(2, '0');
-      label.style.cssText = 'position:absolute;bottom:12px;left:14px;color:rgba(255,248,232,0.8);font-family:ui-monospace,monospace;font-size:12px;letter-spacing:0.1em;background:rgba(0,0,0,0.4);padding:4px 8px;border-radius:3px;';
       card.appendChild(img);
-      card.appendChild(label);
       wrap.appendChild(card);
     }
+    // vertical scroll → progress
+    wrap.addEventListener('scroll', () => {
+      const max = Math.max(1, wrap.scrollHeight - wrap.clientHeight);
+      setProgress((wrap.scrollTop / max) * 100);
+    });
     return wrap;
   };
 
@@ -775,6 +785,7 @@
     if (pageNums[0]) pageNums[0].textContent = String(idx + 1).padStart(2, '0');
     if (counter) counter.textContent = String(idx + 1).padStart(2, '0');
     if (totEl) totEl.textContent = String(TOTAL);
+    setProgress(((idx + 1) / Math.max(1, panels.length)) * 100);
   };
 
   const applyLayout = (next) => {
@@ -786,7 +797,7 @@
       if (!verticalEl) verticalEl = buildVertical();
       if (spreadEl) spreadEl.style.display = 'none';
       if (!stage.contains(verticalEl)) stage.appendChild(verticalEl);
-      verticalEl.style.display = '';
+      verticalEl.style.display = 'flex';
       // Hide edge controls in vertical mode.
       document.querySelectorAll('.stage-edge').forEach((e) => { e.style.display = 'none'; });
     } else {

@@ -744,6 +744,15 @@
     const tile = row.querySelector('.cover');
     if (tile && e?.paths?.cover) setBg(tile, e.paths.cover);
   });
+
+  // The page markup is hardcoded to Vagabond. Rewrite every reader/series link
+  // that hard-codes id=vagabond to point to the real series the user opened.
+  if (id !== 'vagabond') {
+    document.querySelectorAll('a[href*="reader.html"], a[href*="series.html"]').forEach((a) => {
+      const href = a.getAttribute('href') || '';
+      a.setAttribute('href', href.replace(/id=vagabond/g, `id=${id}`));
+    });
+  }
 })();
 </script>
 </body>
