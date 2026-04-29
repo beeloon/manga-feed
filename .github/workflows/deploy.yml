@@ -20,11 +20,38 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cache fetched manga assets
+        id: cache-manga
+        uses: actions/cache@v4
+        with:
+          path: public/assets/manga
+          # Re-fetch when either fetch script changes; otherwise reuse the cache.
+          key: manga-assets-v1-${{ hashFiles('scripts/fetch-manga-assets.js', 'scripts/fetch-manga-chapters.js') }}
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Fetch covers + manifest (cold cache only)
+        if: steps.cache-manga.outputs.cache-hit != 'true'
+        run: npm run fetch:assets
+
+      - name: Fetch chapter pages (cold cache only)
+        if: steps.cache-manga.outputs.cache-hit != 'true'
+        run: npm run fetch:chapters
+
       - uses: actions/configure-pages@v5
+
       - uses: actions/upload-pages-artifact@v3
         with:
           path: ./public
+
       - id: deployment
         uses: actions/deploy-pages@v4
