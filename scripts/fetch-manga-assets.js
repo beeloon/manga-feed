@@ -12,7 +12,7 @@ const TITLES = [
   { id: "jojo",         anilist: "Steel Ball Run",                              wiki: "Steel_Ball_Run" },
   { id: "vagabond",     anilist: "Vagabond",                                    wiki: "Vagabond_(manga)" },
   { id: "onepiece",     anilist: "One Piece",                                   wiki: "One_Piece" },
-  { id: "monster",      anilist: "Monster Naoki Urasawa",                       wiki: "Monster_(manga)" },
+  { id: "monster",      anilist: "Monster", anilistId: 30001,                   wiki: "Monster_(manga)" },
   { id: "slamdunk",     anilist: "Slam Dunk",                                   wiki: "Slam_Dunk_(manga)" },
   { id: "vinland",      anilist: "Vinland Saga",                                wiki: "Vinland_Saga_(manga)" },
   { id: "fma",          anilist: "Fullmetal Alchemist",                         wiki: "Fullmetal_Alchemist" },
@@ -28,8 +28,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const ANILIST_URL = "https://graphql.anilist.co";
 
 const ANILIST_QUERY = `
-query ($search: String) {
-  Media(search: $search, type: MANGA, sort: SEARCH_MATCH) {
+query ($search: String, $id: Int) {
+  Media(search: $search, id: $id, type: MANGA, sort: SEARCH_MATCH) {
     id
     title { romaji english native }
     description(asHtml: false)
@@ -47,11 +47,12 @@ query ($search: String) {
   }
 }`;
 
-async function anilistLookup(search) {
+async function anilistLookup({ search, id }) {
+  const variables = id ? { id } : { search };
   const res = await fetch(ANILIST_URL, {
     method: "POST",
     headers: { "Content-Type": "application/json", Accept: "application/json" },
-    body: JSON.stringify({ query: ANILIST_QUERY, variables: { search } }),
+    body: JSON.stringify({ query: ANILIST_QUERY, variables }),
   });
   if (!res.ok) throw new Error(`AniList ${res.status}`);
   const json = await res.json();
@@ -91,7 +92,7 @@ async function main() {
 
     let media = null;
     try {
-      media = await anilistLookup(t.anilist);
+      media = await anilistLookup({ search: t.anilist, id: t.anilistId });
     } catch (e) {
       console.warn(`  AniList failed: ${e.message}`);
     }
