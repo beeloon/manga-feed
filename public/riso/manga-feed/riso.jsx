@@ -1016,7 +1016,9 @@ function Rz2Reader({ id, onBack, onNavigate }) {
             />
           )}
           <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(left).padStart(2,'0')} —</div>
-          <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {left} ARTWORK ]<br/>{captions[0].toUpperCase()}</div>
+          {!m.panels?.length && (
+            <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {left} ARTWORK ]<br/>{captions[0].toUpperCase()}</div>
+          )}
           <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[0]} — riso pink, single layer</div>
         </div>
         <div className="rz2-page" style={{ overflow: "hidden" }}>
@@ -1038,7 +1040,9 @@ function Rz2Reader({ id, onBack, onNavigate }) {
             />
           )}
           <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(right).padStart(2,'0')} —</div>
-          <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {right} ARTWORK ]<br/>{captions[1].toUpperCase()}</div>
+          {!m.panels?.length && (
+            <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {right} ARTWORK ]<br/>{captions[1].toUpperCase()}</div>
+          )}
           <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[1]} — riso blue, second pass</div>
         </div>
       </div>
