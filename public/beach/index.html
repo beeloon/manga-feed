@@ -427,7 +427,7 @@
   <section class="container section">
     <h3 class="section-h" style="margin-bottom:18px;">Latest News</h3>
     <div class="news-grid">
-      <article class="news-feature">
+      <article class="news-feature" data-news-cover="vagabond">
         <div class="badge">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
             <rect x="3" y="3" width="10" height="10" rx="1.5"/>
@@ -441,13 +441,13 @@
         </div>
       </article>
       <div class="news-side">
-        <article class="news-card n1">
+        <article class="news-card n1" data-news-cover="gachiakuta">
           <div class="label"><span>Gachiakuta anime confirmed for 2025</span><span class="arrow">→</span></div>
         </article>
         <article class="news-card n2">
           <div class="label"><span>'Dandadan' gets first full trailer for English dub</span><span class="arrow">→</span></div>
         </article>
-        <article class="news-card n3">
+        <article class="news-card n3" data-news-cover="onepiece">
           <div class="label"><span>One Piece English dub: Dr. Vegapunk voice actor…</span><span class="arrow">→</span></div>
         </article>
       </div>
@@ -573,6 +573,18 @@
     const heroArt = document.querySelector('.hero-art');
     if (heroArt) heroArt.style.backgroundImage = `url(${hero.paths.banner})`;
   }
+
+  // News cards — fill background from referenced manga's banner (preferred) or cover.
+  // Labels sit in their own white pill at the bottom, so we don't touch text color.
+  document.querySelectorAll('[data-news-cover]').forEach((el) => {
+    const refId = el.getAttribute('data-news-cover');
+    const ref = manifest[refId];
+    const src = ref?.paths?.banner || ref?.paths?.cover;
+    if (!src) return;
+    el.style.setProperty('background-image', `url(${src})`, 'important');
+    el.style.setProperty('background-size', 'cover', 'important');
+    el.style.setProperty('background-position', 'center', 'important');
+  });
 })();
 </script>
 </body>
