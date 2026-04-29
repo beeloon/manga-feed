@@ -146,26 +146,26 @@ function UpdatesScreen({ onOpenManga, onNavigate }) {
   // Build mock update timeline
   const updates = [
     { day: "Today", entries: [
-      { id: "vagabond", chapter: 47, time: "06:14", note: "New chapter" },
-      { id: "north-of-eight", chapter: 8, time: "04:02", note: "Webtoon · 60 panels" },
+      { id: "vagabond", chapter: 312, time: "06:14", note: "New chapter" },
+      { id: "gachiakuta", chapter: 124, time: "04:02", note: "New chapter" },
     ]},
     { day: "Yesterday", entries: [
-      { id: "lantern-quarter", chapter: 12, time: "22:48", note: "New chapter" },
-      { id: "the-glassblower", chapter: 86, time: "14:33", note: "Final chapter of arc" },
-      { id: "twelve-letters", chapter: 6, time: "09:11", note: "Webtoon · letter six" },
+      { id: "berserk", chapter: 364, time: "22:48", note: "New chapter" },
+      { id: "kingdom", chapter: 798, time: "14:33", note: "Final chapter of arc" },
+      { id: "ghost-fixers", chapter: 12, time: "09:11", note: "New chapter" },
     ]},
     { day: "April 25", entries: [
-      { id: "the-rented-room", chapter: 33, time: "20:02", note: "New chapter" },
-      { id: "blue-hour", chapter: 19, time: "11:40", note: "Bonus interlude" },
+      { id: "onepiece", chapter: 1100, time: "20:02", note: "New chapter" },
+      { id: "vinland", chapter: 207, time: "11:40", note: "Bonus interlude" },
     ]},
     { day: "April 24", entries: [
-      { id: "low-tide", chapter: 124, time: "18:55", note: "New chapter" },
-      { id: "iron-gardener", chapter: 41, time: "12:00", note: "Volume 5 begins" },
-      { id: "salt-and-paper", chapter: 28, time: "08:15", note: "New chapter" },
+      { id: "gokuragukai", chapter: 28, time: "18:55", note: "New chapter" },
+      { id: "grandblue", chapter: 88, time: "12:00", note: "Volume 5 begins" },
+      { id: "fma", chapter: 108, time: "08:15", note: "Reissue chapter" },
     ]},
     { day: "April 23", entries: [
-      { id: "the-cartographer", chapter: 67, time: "17:30", note: "New chapter" },
-      { id: "the-quiet-house", chapter: 14, time: "02:11", note: "New chapter · long" },
+      { id: "slamdunk", chapter: 276, time: "17:30", note: "Anniversary edition" },
+      { id: "monster", chapter: 162, time: "02:11", note: "Restoration chapter · long" },
     ]},
   ];
 
