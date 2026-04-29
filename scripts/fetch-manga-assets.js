@@ -78,6 +78,35 @@ function pickAuthor(staffEdges) {
   return (story || staffEdges[0]).node?.name?.full || null;
 }
 
+const WIKI_HEADERS = {
+  "User-Agent": "manga-feed-mvp/0.0.1 (design review prototype; contact: local)",
+  Accept: "application/json",
+};
+
+async function wikiMediaList(pageTitle) {
+  const url = `https://en.wikipedia.org/api/rest_v1/page/media-list/${encodeURIComponent(pageTitle)}`;
+  const res = await fetch(url, { headers: WIKI_HEADERS });
+  if (!res.ok) return [];
+  const json = await res.json();
+  return Array.isArray(json.items) ? json.items : [];
+}
+
+function pickPanelUrls(items, max = 3) {
+  // Skip svg + tiny icons; prefer manga-related raster images.
+  const picks = [];
+  for (const it of items) {
+    if (it.type !== "image") continue;
+    const src = it.srcset?.[it.srcset.length - 1]?.src || it.original?.source;
+    if (!src) continue;
+    const url = src.startsWith("//") ? `https:${src}` : src;
+    if (/\.svg(\?|$)/i.test(url)) continue;
+    if (/(commons-logo|wikiquote|wikidata|edit-icon|red_pencil)/i.test(url)) continue;
+    picks.push(url);
+    if (picks.length >= max) break;
+  }
+  return picks;
+}
+
 async function ensureDir(p) {
   await fs.mkdir(p, { recursive: true });
 }
@@ -128,6 +157,36 @@ async function main() {
         console.log(`  banner ✓`);
       } catch (e) { console.warn(`  banner ✗ ${e.message}`); }
     }
+
+    // Sample panels via Wikipedia
+    let panelUrls = [];
+    if (t.wiki) {
+      try {
+        const items = await wikiMediaList(t.wiki);
+        panelUrls = pickPanelUrls(items, 3);
+      } catch (e) {
+        console.warn(`  wiki ✗ ${e.message}`);
+      }
+    }
+
+    const panels = [];
+    for (let i = 0; i < panelUrls.length && i < 3; i++) {
+      const p = path.join(dir, `panel-${i + 1}.jpg`);
+      try {
+        await downloadImage(panelUrls[i], p);
+        panels.push(`/assets/manga/${t.id}/panel-${i + 1}.jpg`);
+      } catch (e) { console.warn(`  panel-${i + 1} ✗ ${e.message}`); }
+    }
+
+    // Fallback: pad to 3 with banner then cover repeats
+    const fallbackPool = [entry.paths.banner, entry.paths.cover].filter(Boolean);
+    let fbi = 0;
+    while (panels.length < 3 && fallbackPool.length) {
+      panels.push(fallbackPool[fbi % fallbackPool.length]);
+      fbi++;
+    }
+    entry.paths.panels = panels;
+    console.log(`  panels: ${panels.length} (${panelUrls.length} from wiki)`);
 
     manifest[t.id] = entry;
     await sleep(700); // be polite (~85/min, under AniList's 90/min)
