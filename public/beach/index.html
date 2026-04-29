@@ -519,5 +519,57 @@
     <a href="../">← back to review</a>
   </div>
 
+<script>
+(async () => {
+  let manifest = {};
+  try {
+    const r = await fetch('/assets/manga/manifest.json');
+    if (r.ok) manifest = await r.json();
+  } catch {}
+
+  const idFromHref = (a) => {
+    const m = (a.getAttribute('href') || '').match(/id=([^&]+)/);
+    return m ? m[1] : null;
+  };
+
+  const setBg = (el, src) => {
+    el.style.backgroundImage = `url(${src})`;
+    el.style.backgroundSize = 'cover';
+    el.style.backgroundPosition = 'center';
+    el.style.color = 'transparent';
+    el.textContent = '';
+  };
+
+  document.querySelectorAll('.rank-row').forEach((row) => {
+    const id = idFromHref(row);
+    if (!id) return;
+    const entry = manifest[id];
+    const tile = row.querySelector('.rank-cover');
+    if (tile && entry?.paths?.cover) setBg(tile, entry.paths.cover);
+  });
+
+  document.querySelectorAll('.recent-item').forEach((row) => {
+    const id = idFromHref(row);
+    if (!id) return;
+    const entry = manifest[id];
+    const tile = row.querySelector('.cover');
+    if (tile && entry?.paths?.cover) setBg(tile, entry.paths.cover);
+  });
+
+  document.querySelectorAll('.update-card').forEach((row) => {
+    const id = idFromHref(row);
+    if (!id) return;
+    const entry = manifest[id];
+    const tile = row.querySelector('.update-cover');
+    if (tile && entry?.paths?.cover) setBg(tile, entry.paths.cover);
+  });
+
+  const hero = manifest.vagabond;
+  if (hero?.paths?.banner) {
+    const heroArt = document.querySelector('.hero-art');
+    if (heroArt) heroArt.style.backgroundImage = `url(${hero.paths.banner})`;
+  }
+})();
+</script>
 </body>
 </html>

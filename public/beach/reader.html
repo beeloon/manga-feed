@@ -685,5 +685,38 @@
     })();
   </script>
 
+<script>
+(async () => {
+  const id = new URLSearchParams(location.search).get('id') || 'vagabond';
+  let manifest = {};
+  try {
+    const r = await fetch('/assets/manga/manifest.json');
+    if (r.ok) manifest = await r.json();
+  } catch {}
+  const entry = manifest[id];
+  if (!entry?.paths?.panels?.length) return;
+
+  const panels = entry.paths.panels;
+  const pageArts = document.querySelectorAll('.page-art');
+  pageArts.forEach((el, i) => {
+    const src = panels[i % panels.length];
+    if (!src) return;
+    el.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = '';
+    img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
+    img.onerror = () => { img.style.display = 'none'; };
+    el.appendChild(img);
+    if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
+  });
+
+  document.querySelectorAll('.reader-title').forEach((el) => {
+    el.textContent = entry.englishTitle || entry.title || id;
+  });
+
+  document.title = `${entry.englishTitle || entry.title || id} — Reader`;
+})();
+</script>
 </body>
 </html>

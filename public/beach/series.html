@@ -700,5 +700,51 @@
     <a href="index.html">← home</a>
   </div>
 
+<script>
+(async () => {
+  const id = new URLSearchParams(location.search).get('id') || 'vagabond';
+  let manifest = {};
+  try {
+    const r = await fetch('/assets/manga/manifest.json');
+    if (r.ok) manifest = await r.json();
+  } catch {}
+  const entry = manifest[id];
+  if (!entry) return;
+
+  const coverEl = document.querySelector('.series-cover');
+  if (coverEl && entry.paths?.cover) {
+    coverEl.style.backgroundImage = `url(${entry.paths.cover})`;
+    coverEl.style.backgroundSize = 'cover';
+    coverEl.style.backgroundPosition = 'center';
+    coverEl.style.color = 'transparent';
+    coverEl.textContent = '';
+  }
+
+  const titleEl = document.querySelector('.series-title');
+  if (titleEl) titleEl.textContent = entry.englishTitle || entry.title || id;
+
+  const jpEl = document.querySelector('.series-jp, .series-title-jp, .series-native');
+  if (jpEl && entry.jpTitle) jpEl.textContent = entry.jpTitle;
+
+  const synEl = document.querySelector('.series-synopsis, .series-desc');
+  if (synEl && entry.synopsis) synEl.textContent = entry.synopsis;
+
+  document.title = `${entry.englishTitle || entry.title || id} — beachRead`;
+
+  document.querySelectorAll('.rel-item').forEach((row) => {
+    const m = (row.getAttribute('href') || '').match(/id=([^&]+)/);
+    if (!m) return;
+    const e = manifest[m[1]];
+    const tile = row.querySelector('.cover');
+    if (tile && e?.paths?.cover) {
+      tile.style.backgroundImage = `url(${e.paths.cover})`;
+      tile.style.backgroundSize = 'cover';
+      tile.style.backgroundPosition = 'center';
+      tile.style.color = 'transparent';
+      tile.textContent = '';
+    }
+  });
+})();
+</script>
 </body>
 </html>
