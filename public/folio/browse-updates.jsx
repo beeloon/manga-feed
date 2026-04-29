@@ -146,7 +146,7 @@ function UpdatesScreen({ onOpenManga, onNavigate }) {
   // Build mock update timeline
   const updates = [
     { day: "Today", entries: [
-      { id: "still-water", chapter: 47, time: "06:14", note: "New chapter" },
+      { id: "vagabond", chapter: 47, time: "06:14", note: "New chapter" },
       { id: "north-of-eight", chapter: 8, time: "04:02", note: "Webtoon · 60 panels" },
     ]},
     { day: "Yesterday", entries: [

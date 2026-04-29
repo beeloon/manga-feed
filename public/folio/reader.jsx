@@ -3,7 +3,7 @@
 
 const { useState: useStateReader, useEffect: useEffectReader, useRef: useRefReader, useCallback: useCallbackReader } = React;
 
-function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side }) {
+function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side, panelImg }) {
   // Solid warm-toned page with page number — per user spec.
   const tone = baseColor;
   const aspect = mode === "vertical" ? "1/1.4" : "1/1.5";
@@ -16,11 +16,29 @@ function ReaderPage({ pageNum, totalPages, accent, baseColor, mode, side }) {
         position: "relative",
       }}
     >
+      {panelImg && (
+        <img
+          src={panelImg}
+          alt=""
+          className="reader-page-panel"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            zIndex: 0,
+          }}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+      )}
       <div
         className="reader-page-inner"
         style={{
           color: accent,
           opacity: 0.6,
+          position: "relative",
+          zIndex: 1,
         }}
       >
         <div className="reader-page-num">
@@ -188,6 +206,7 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
                 accent={manga.accent}
                 baseColor={manga.cover}
                 mode="vertical"
+                panelImg={manga.panels[i % (manga.panels.length || 1)]}
               />
             ))}
             <div className="reader-chapter-end">
@@ -210,18 +229,18 @@ function Reader({ mangaId, onBack, layout, chromeMode }) {
                 {/* For RTL manga, page on right is the "first" page of the spread */}
                 {manga.direction === "RTL" ? (
                   <>
-                    <ReaderPage pageNum={Math.min(total, page + 1)} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="L" />
-                    <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="R" />
+                    <ReaderPage pageNum={Math.min(total, page + 1)} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="L" panelImg={manga.panels[(Math.min(total, page + 1) - 1) % (manga.panels.length || 1)]} />
+                    <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="R" panelImg={manga.panels[(page - 1) % (manga.panels.length || 1)]} />
                   </>
                 ) : (
                   <>
-                    <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="L" />
-                    <ReaderPage pageNum={Math.min(total, page + 1)} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="R" />
+                    <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="L" panelImg={manga.panels[(page - 1) % (manga.panels.length || 1)]} />
+                    <ReaderPage pageNum={Math.min(total, page + 1)} totalPages={total} accent={manga.accent} baseColor={manga.cover} side="R" panelImg={manga.panels[(Math.min(total, page + 1) - 1) % (manga.panels.length || 1)]} />
                   </>
                 )}
               </div>
             ) : (
-              <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} />
+              <ReaderPage pageNum={page} totalPages={total} accent={manga.accent} baseColor={manga.cover} panelImg={manga.panels[(page - 1) % (manga.panels.length || 1)]} />
             )}
           </div>
           <button className="reader-edge reader-edge-right" onClick={manga.direction === "RTL" ? prevPage : nextPage} aria-label="Next">

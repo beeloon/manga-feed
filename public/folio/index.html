@@ -163,7 +163,7 @@
 
             <window.TweakSection title="Try it">
               {view.name === "home" ? (
-                <window.TweakButton label="Open reader →" onClick={() => openManga("still-water")} />
+                <window.TweakButton label="Open reader →" onClick={() => openManga("vagabond")} />
               ) : view.name === "reader" ? (
                 <window.TweakButton label="Back to library →" onClick={goHome} />
               ) : (
@@ -175,7 +175,13 @@
       );
     }
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    (async () => {
+      try {
+        const r = await fetch('/assets/manga/manifest.json');
+        window.MANGA_MANIFEST = r.ok ? await r.json() : {};
+      } catch { window.MANGA_MANIFEST = {}; }
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    })();
   </script>
 </body>
 </html>

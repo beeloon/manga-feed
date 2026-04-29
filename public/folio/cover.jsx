@@ -41,6 +41,22 @@ function Cover({ manga, size = "md", showMeta = false, style = {} }) {
         ...style,
       }}
     >
+      {manga.coverImg && (
+        <img
+          src={manga.coverImg}
+          alt={manga.title}
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            display: "block",
+            zIndex: 1,
+          }}
+          onError={(e) => { e.currentTarget.style.display = "none"; }}
+        />
+      )}
       {/* Subtle grain texture using radial-gradient layer */}
       <div
         style={{
@@ -48,51 +64,58 @@ function Cover({ manga, size = "md", showMeta = false, style = {} }) {
           inset: 0,
           background: `radial-gradient(circle at 30% 20%, rgba(255,255,255,0.04), transparent 60%), radial-gradient(circle at 80% 90%, rgba(0,0,0,0.18), transparent 70%)`,
           pointerEvents: "none",
+          zIndex: 2,
         }}
       />
-      {/* Hairline accent rule */}
-      <div
-        style={{
-          position: "absolute",
-          top: "50%",
-          left: "10%",
-          width: "20%",
-          height: 1,
-          background: manga.accent,
-          opacity: 0.55,
-        }}
-      />
-      {/* Title block */}
-      <div
-        style={{
-          position: "absolute",
-          ...placement,
-          color: manga.accent,
-          fontFamily: "'Newsreader', Georgia, serif",
-          fontWeight: 500,
-          fontSize: dims.titleSize,
-          lineHeight: 1.05,
-          letterSpacing: "-0.01em",
-        }}
-      >
-        <div style={{ textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", fontSize: Math.max(8, dims.authorSize - 2), letterSpacing: "0.18em", opacity: 0.7, marginBottom: 6, fontWeight: 400 }}>
-          № {manga.chapters.toString().padStart(3, "0")}
-        </div>
-        <div style={{ fontStyle: "italic" }}>{manga.title}</div>
-        <div
-          style={{
-            fontFamily: "'Inter Tight', sans-serif",
-            fontSize: dims.authorSize,
-            fontStyle: "normal",
-            fontWeight: 400,
-            opacity: 0.7,
-            marginTop: 6,
-            letterSpacing: "0.04em",
-          }}
-        >
-          {manga.author}
-        </div>
-      </div>
+      {!manga.coverImg && (
+        <>
+          {/* Hairline accent rule */}
+          <div
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "10%",
+              width: "20%",
+              height: 1,
+              background: manga.accent,
+              opacity: 0.55,
+              zIndex: 2,
+            }}
+          />
+          {/* Title block */}
+          <div
+            style={{
+              position: "absolute",
+              ...placement,
+              color: manga.accent,
+              fontFamily: "'Newsreader', Georgia, serif",
+              fontWeight: 500,
+              fontSize: dims.titleSize,
+              lineHeight: 1.05,
+              letterSpacing: "-0.01em",
+              zIndex: 2,
+            }}
+          >
+            <div style={{ textTransform: "uppercase", fontFamily: "'JetBrains Mono', monospace", fontSize: Math.max(8, dims.authorSize - 2), letterSpacing: "0.18em", opacity: 0.7, marginBottom: 6, fontWeight: 400 }}>
+              № {manga.chapters.toString().padStart(3, "0")}
+            </div>
+            <div style={{ fontStyle: "italic" }}>{manga.title}</div>
+            <div
+              style={{
+                fontFamily: "'Inter Tight', sans-serif",
+                fontSize: dims.authorSize,
+                fontStyle: "normal",
+                fontWeight: 400,
+                opacity: 0.7,
+                marginTop: 6,
+                letterSpacing: "0.04em",
+              }}
+            >
+              {manga.author}
+            </div>
+          </div>
+        </>
+      )}
 
       {showMeta && (
         <div
@@ -105,6 +128,7 @@ function Cover({ manga, size = "md", showMeta = false, style = {} }) {
             color: manga.accent,
             opacity: 0.5,
             letterSpacing: "0.1em",
+            zIndex: 2,
           }}
         >
           {manga.year}
