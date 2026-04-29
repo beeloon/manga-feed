@@ -13,5 +13,4 @@ app.listen(port, () => {
   console.log(`  /folio   reading library design`);
   console.log(`  /riso    risograph zine design`);
   console.log(`  /beach   beachRead editorial portal design`);
-  console.log(`  /gpt     Night Desk dark IDE workspace`);
 });
