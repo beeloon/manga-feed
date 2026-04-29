@@ -25,6 +25,58 @@ const TITLES = [
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+const ANILIST_URL = "https://graphql.anilist.co";
+
+const ANILIST_QUERY = `
+query ($search: String) {
+  Media(search: $search, type: MANGA, sort: SEARCH_MATCH) {
+    id
+    title { romaji english native }
+    description(asHtml: false)
+    chapters
+    startDate { year }
+    genres
+    coverImage { extraLarge large color }
+    bannerImage
+    staff(perPage: 1, sort: RELEVANCE) {
+      edges {
+        role
+        node { name { full } }
+      }
+    }
+  }
+}`;
+
+async function anilistLookup(search) {
+  const res = await fetch(ANILIST_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Accept: "application/json" },
+    body: JSON.stringify({ query: ANILIST_QUERY, variables: { search } }),
+  });
+  if (!res.ok) throw new Error(`AniList ${res.status}`);
+  const json = await res.json();
+  return json.data?.Media || null;
+}
+
+async function downloadImage(url, outPath) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Download ${res.status} for ${url}`);
+  const buf = Buffer.from(await res.arrayBuffer());
+  await fs.writeFile(outPath, buf);
+  return outPath;
+}
+
+function stripHtml(s) {
+  if (!s) return "";
+  return s.replace(/<br\s*\/?>/gi, "\n").replace(/<[^>]+>/g, "").trim();
+}
+
+function pickAuthor(staffEdges) {
+  if (!staffEdges?.length) return null;
+  const story = staffEdges.find((e) => /story/i.test(e.role));
+  return (story || staffEdges[0]).node?.name?.full || null;
+}
+
 async function ensureDir(p) {
   await fs.mkdir(p, { recursive: true });
 }
@@ -36,9 +88,48 @@ async function main() {
     console.log(`\n[${t.id}] ${t.anilist}`);
     const dir = path.join(OUT_DIR, t.id);
     await ensureDir(dir);
-    // Filled in in later tasks
-    manifest[t.id] = { id: t.id, paths: {} };
-    await sleep(250);
+
+    let media = null;
+    try {
+      media = await anilistLookup(t.anilist);
+    } catch (e) {
+      console.warn(`  AniList failed: ${e.message}`);
+    }
+
+    const entry = {
+      id: t.id,
+      title: media?.title?.romaji || t.anilist,
+      jpTitle: media?.title?.native || null,
+      englishTitle: media?.title?.english || null,
+      author: pickAuthor(media?.staff?.edges) || null,
+      year: media?.startDate?.year || null,
+      chapters: media?.chapters || null,
+      genres: media?.genres || [],
+      synopsis: stripHtml(media?.description),
+      accentColor: media?.coverImage?.color || null,
+      paths: {},
+    };
+
+    if (media?.coverImage?.extraLarge) {
+      const coverPath = path.join(dir, "cover.jpg");
+      try {
+        await downloadImage(media.coverImage.extraLarge, coverPath);
+        entry.paths.cover = `/assets/manga/${t.id}/cover.jpg`;
+        console.log(`  cover ✓`);
+      } catch (e) { console.warn(`  cover ✗ ${e.message}`); }
+    }
+
+    if (media?.bannerImage) {
+      const bannerPath = path.join(dir, "banner.jpg");
+      try {
+        await downloadImage(media.bannerImage, bannerPath);
+        entry.paths.banner = `/assets/manga/${t.id}/banner.jpg`;
+        console.log(`  banner ✓`);
+      } catch (e) { console.warn(`  banner ✗ ${e.message}`); }
+    }
+
+    manifest[t.id] = entry;
+    await sleep(700); // be polite (~85/min, under AniList's 90/min)
   }
   await fs.writeFile(
     path.join(OUT_DIR, "manifest.json"),
