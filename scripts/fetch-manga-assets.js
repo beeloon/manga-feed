@@ -176,6 +176,7 @@ async function main() {
         await downloadImage(panelUrls[i], p);
         panels.push(`/assets/manga/${t.id}/panel-${i + 1}.jpg`);
       } catch (e) { console.warn(`  panel-${i + 1} ✗ ${e.message}`); }
+      if (i < panelUrls.length - 1 && i < 2) await sleep(400);
     }
 
     // Fallback: pad to 3 with banner then cover repeats
@@ -186,7 +187,8 @@ async function main() {
       fbi++;
     }
     entry.paths.panels = panels;
-    console.log(`  panels: ${panels.length} (${panelUrls.length} from wiki)`);
+    const wikiHits = panels.filter((p) => !p.endsWith("cover.jpg") && !p.endsWith("banner.jpg")).length;
+    console.log(`  panels: ${panels.length} (${wikiHits} from wiki, ${panels.length - wikiHits} fallback)`);
 
     manifest[t.id] = entry;
     await sleep(700); // be polite (~85/min, under AniList's 90/min)
