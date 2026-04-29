@@ -1058,7 +1058,8 @@ function Rz2Reader({ id, onBack, onNavigate }) {
             {i*2+1}
           </div>
         ))}
-        <button className="rz2-btn outline" style={{marginLeft:'auto'}} onClick={() => setSpreadIdx(Math.min(totalSpreads-1, spreadIdx+1))}>NEXT ▸</button>
+        <button className="rz2-btn outline" style={{marginLeft:'auto'}} disabled={spreadIdx === 0} onClick={() => setSpreadIdx(Math.max(0, spreadIdx-1))}>◂ PREV</button>
+        <button className="rz2-btn outline" disabled={spreadIdx >= totalSpreads-1} onClick={() => setSpreadIdx(Math.min(totalSpreads-1, spreadIdx+1))}>NEXT ▸</button>
       </div>
 
       <div className="rz2-r-liner">
