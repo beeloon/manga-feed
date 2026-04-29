@@ -4,7 +4,7 @@
 const ID_ORDER = [
   "berserk", "jojo", "vagabond", "onepiece", "monster",
   "slamdunk", "vinland", "fma", "grandblue", "kingdom",
-  "ghost-fixers", "gokuragukai", "gachiakuta",
+  "ghost-fixers", "gokuragukai", "gachiakuta", "dandadan",
 ];
 
 const RISO_OVERRIDES = {
@@ -21,6 +21,7 @@ const RISO_OVERRIDES = {
   "ghost-fixers": { cover: "#2e2419", accent: "#c89040", direction: "RTL", featured: false },
   gokuragukai:    { cover: "#3b2823", accent: "#d87060", direction: "RTL", featured: false },
   gachiakuta:     { cover: "#1e2820", accent: "#5a9870", direction: "RTL", featured: false },
+  dandadan:       { cover: "#1a1a2a", accent: "#e0a040", direction: "RTL", featured: false },
 };
 
 function buildRisoEntry(id, manifest) {

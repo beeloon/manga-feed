@@ -4,7 +4,7 @@
 const ID_ORDER = [
   "berserk", "jojo", "vagabond", "onepiece", "monster",
   "slamdunk", "vinland", "fma", "grandblue", "kingdom",
-  "ghost-fixers", "gokuragukai", "gachiakuta",
+  "ghost-fixers", "gokuragukai", "gachiakuta", "dandadan",
 ];
 
 const FOLIO_OVERRIDES = {
@@ -21,6 +21,7 @@ const FOLIO_OVERRIDES = {
   "ghost-fixers": { cover: "#2e2419", accent: "#b39564", direction: "RTL", featured: false },
   gokuragukai:    { cover: "#3b2823", accent: "#cc9482", direction: "RTL", featured: false },
   gachiakuta:     { cover: "#1e2820", accent: "#7d9b78", direction: "RTL", featured: false },
+  dandadan:       { cover: "#1a1a2a", accent: "#c08a4a", direction: "RTL", featured: false },
 };
 
 function buildFolioEntry(id, manifest) {

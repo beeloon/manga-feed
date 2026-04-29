@@ -21,6 +21,7 @@ const TITLES = [
   { id: "ghost-fixers", anilist: "Ghost Fixers",                                wiki: null },
   { id: "gokuragukai",  anilist: "Gokurakugai",                                 wiki: null },
   { id: "gachiakuta",   anilist: "Gachiakuta",                                  wiki: "Gachiakuta" },
+  { id: "dandadan",     anilist: "Dandadan",                                    wiki: "Dandadan" },
 ];
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
