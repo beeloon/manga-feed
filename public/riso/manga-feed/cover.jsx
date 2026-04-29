@@ -21,8 +21,6 @@ function MFCover({ manga, size = "md", showMeta = true, style }) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            mixBlendMode: "multiply",
-            filter: "contrast(1.05)",
             zIndex: 1,
           }}
           onError={(e) => { e.currentTarget.style.display = "none"; }}
