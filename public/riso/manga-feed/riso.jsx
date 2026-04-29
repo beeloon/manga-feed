@@ -606,29 +606,29 @@ const RZ2_STYLE = `
 // HOME
 // ──────────────────────────────────────────────────────
 function Rz2Home({ onOpenManga, onNavigate }) {
-  const ed = window.findManga("the-glassblower");
-  const bSide = window.findManga("blue-hour");
-  const ranked = ["the-glassblower","blue-hour","still-water","lantern-quarter","iron-gardener","north-of-eight"];
+  const ed = window.findManga("vagabond");
+  const bSide = window.findManga("berserk");
+  const ranked = ["vagabond","berserk","onepiece","monster","kingdom","gachiakuta"];
   const trends = ["▲2","▲4","—","▼1","▲1","NEW"];
   const reads = [82.4, 71.0, 68.5, 54.2, 48.9, 31.7];
   const updates = [
-    { id:"still-water", chs:[
+    { id:"vagabond", chs:[
       {n:"47",t:"Harbor at dusk",w:"today"},
       {n:"46",t:"What the gulls saw",w:"4d"},
       {n:"45",t:"A letter, returned",w:"11d"},
     ]},
-    { id:"north-of-eight", chs:[
+    { id:"gachiakuta", chs:[
       {n:"08",t:"The 4:42 passenger",w:"5h"},
       {n:"07",t:"Conductor's notes",w:"1w"},
       {n:"06",t:"South of nine",w:"2w"},
     ]},
-    { id:"iron-gardener", chs:[
+    { id:"kingdom", chs:[
       {n:"41",t:"First bloom",w:"today"},
       {n:"40",t:"Forge silent",w:"1w"},
       {n:"39",t:"Soil, salted",w:"2w"},
     ]},
   ];
-  const recents = ["the-rented-room","blue-hour","lantern-quarter","salt-and-paper","the-quiet-house","the-cartographer","twelve-letters"];
+  const recents = ["fma","vinland","slamdunk","grandblue","gokuragukai","ghost-fixers","monster"];
 
   return (
     <div className="rz2">
@@ -997,15 +997,49 @@ function Rz2Reader({ id, onBack, onNavigate }) {
       </div>
 
       <div className="rz2-spread">
-        <div className="rz2-page">
-          <div className="rz2-page-num">— {String(left).padStart(2,'0')} —</div>
-          <div className="rz2-page-shape">[ PAGE {left} ARTWORK ]<br/>{captions[0].toUpperCase()}</div>
-          <div className="rz2-page-cap">{captions[0]} — riso pink, single layer</div>
+        <div className="rz2-page" style={{ overflow: "hidden" }}>
+          {m.panels && m.panels[(left - 1) % (m.panels.length || 1)] && (
+            <img
+              src={m.panels[(left - 1) % (m.panels.length || 1)]}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                mixBlendMode: "multiply",
+                opacity: 0.85,
+                zIndex: 0,
+              }}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
+          <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(left).padStart(2,'0')} —</div>
+          <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {left} ARTWORK ]<br/>{captions[0].toUpperCase()}</div>
+          <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[0]} — riso pink, single layer</div>
         </div>
-        <div className="rz2-page">
-          <div className="rz2-page-num">— {String(right).padStart(2,'0')} —</div>
-          <div className="rz2-page-shape">[ PAGE {right} ARTWORK ]<br/>{captions[1].toUpperCase()}</div>
-          <div className="rz2-page-cap">{captions[1]} — riso blue, second pass</div>
+        <div className="rz2-page" style={{ overflow: "hidden" }}>
+          {m.panels && m.panels[(right - 1) % (m.panels.length || 1)] && (
+            <img
+              src={m.panels[(right - 1) % (m.panels.length || 1)]}
+              alt=""
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                mixBlendMode: "multiply",
+                opacity: 0.85,
+                zIndex: 0,
+              }}
+              onError={(e) => { e.currentTarget.style.display = "none"; }}
+            />
+          )}
+          <div className="rz2-page-num" style={{ position: "relative", zIndex: 1 }}>— {String(right).padStart(2,'0')} —</div>
+          <div className="rz2-page-shape" style={{ position: "relative", zIndex: 1 }}>[ PAGE {right} ARTWORK ]<br/>{captions[1].toUpperCase()}</div>
+          <div className="rz2-page-cap" style={{ position: "relative", zIndex: 1 }}>{captions[1]} — riso blue, second pass</div>
         </div>
       </div>
 
