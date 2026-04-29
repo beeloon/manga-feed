@@ -9,10 +9,10 @@ const OUT_DIR = path.join(__dirname, "..", "public", "assets", "manga");
 
 const TITLES = [
   { id: "berserk",      anilist: "Berserk",                                     wiki: "Berserk_(manga)" },
-  { id: "jojo",         anilist: "JoJo no Kimyou na Bouken Part 7: Steel Ball Run", wiki: "Steel_Ball_Run" },
+  { id: "jojo",         anilist: "Steel Ball Run",                              wiki: "Steel_Ball_Run" },
   { id: "vagabond",     anilist: "Vagabond",                                    wiki: "Vagabond_(manga)" },
   { id: "onepiece",     anilist: "One Piece",                                   wiki: "One_Piece" },
-  { id: "monster",      anilist: "Monster",                                     wiki: "Monster_(manga)" },
+  { id: "monster",      anilist: "Monster Naoki Urasawa",                       wiki: "Monster_(manga)" },
   { id: "slamdunk",     anilist: "Slam Dunk",                                   wiki: "Slam_Dunk_(manga)" },
   { id: "vinland",      anilist: "Vinland Saga",                                wiki: "Vinland_Saga_(manga)" },
   { id: "fma",          anilist: "Fullmetal Alchemist",                         wiki: "Fullmetal_Alchemist" },
