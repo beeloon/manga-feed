@@ -705,7 +705,7 @@
   const id = new URLSearchParams(location.search).get('id') || 'vagabond';
   let manifest = {};
   try {
-    const r = await fetch('/assets/manga/manifest.json');
+    const r = await fetch('../assets/manga/manifest.json');
     if (r.ok) manifest = await r.json();
   } catch {}
   const entry = manifest[id];

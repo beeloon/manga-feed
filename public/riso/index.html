@@ -134,7 +134,7 @@
 
     (async () => {
       try {
-        const r = await fetch('/assets/manga/manifest.json');
+        const r = await fetch('../assets/manga/manifest.json');
         window.MANGA_MANIFEST = r.ok ? await r.json() : {};
       } catch { window.MANGA_MANIFEST = {}; }
       if (typeof window.buildMangaCatalog === "function") window.buildMangaCatalog();

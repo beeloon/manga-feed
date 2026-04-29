@@ -201,7 +201,7 @@ async function processTitle(id, manifestEntry) {
     process.stdout.write(`  page ${i + 1}/${serv.pages.length}\r`);
     try {
       await downloadBinary(url, localPath);
-      pagePaths.push(`/assets/manga/${id}/ch1/${localName}`);
+      pagePaths.push(`../assets/manga/${id}/ch1/${localName}`);
     } catch (e) {
       console.warn(`\n  page ${i + 1} failed: ${e.message}`);
     }

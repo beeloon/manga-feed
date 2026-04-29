@@ -145,7 +145,7 @@ async function main() {
       const coverPath = path.join(dir, "cover.jpg");
       try {
         await downloadImage(media.coverImage.extraLarge, coverPath);
-        entry.paths.cover = `/assets/manga/${t.id}/cover.jpg`;
+        entry.paths.cover = `../assets/manga/${t.id}/cover.jpg`;
         console.log(`  cover ✓`);
       } catch (e) { console.warn(`  cover ✗ ${e.message}`); }
     }
@@ -154,7 +154,7 @@ async function main() {
       const bannerPath = path.join(dir, "banner.jpg");
       try {
         await downloadImage(media.bannerImage, bannerPath);
-        entry.paths.banner = `/assets/manga/${t.id}/banner.jpg`;
+        entry.paths.banner = `../assets/manga/${t.id}/banner.jpg`;
         console.log(`  banner ✓`);
       } catch (e) { console.warn(`  banner ✗ ${e.message}`); }
     }
@@ -175,7 +175,7 @@ async function main() {
       const p = path.join(dir, `panel-${i + 1}.jpg`);
       try {
         await downloadImage(panelUrls[i], p);
-        panels.push(`/assets/manga/${t.id}/panel-${i + 1}.jpg`);
+        panels.push(`../assets/manga/${t.id}/panel-${i + 1}.jpg`);
       } catch (e) { console.warn(`  panel-${i + 1} ✗ ${e.message}`); }
       if (i < panelUrls.length - 1 && i < 2) await sleep(400);
     }
