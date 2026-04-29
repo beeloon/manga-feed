@@ -970,12 +970,21 @@ function Rz2Series({ id, onOpenManga, onNavigate }) {
 // ──────────────────────────────────────────────────────
 function Rz2Reader({ id, onBack, onNavigate }) {
   const m = window.findManga(id);
-  const { useState } = React;
+  const { useState, useEffect } = React;
   const [spreadIdx, setSpreadIdx] = useState(4); // pages 9-10
   const totalPages = m.pages;
   const totalSpreads = Math.ceil(totalPages / 2);
   const left = spreadIdx * 2 + 1;
   const right = left + 1;
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowLeft")  setSpreadIdx((v) => Math.max(0, v - 1));
+      if (e.key === "ArrowRight") setSpreadIdx((v) => Math.min(totalSpreads - 1, v + 1));
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [totalSpreads]);
 
   const captions = [
     "exterior. dawn. the harbor wakes.",

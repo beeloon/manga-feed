@@ -697,19 +697,57 @@
   if (!entry?.paths?.panels?.length) return;
 
   const panels = entry.paths.panels;
-  const pageArts = document.querySelectorAll('.page-art');
-  pageArts.forEach((el, i) => {
-    const src = panels[i % panels.length];
-    if (!src) return;
+  const pageArts = Array.from(document.querySelectorAll('.page-art'));
+  const pageNums = Array.from(document.querySelectorAll('.page-num'));
+  const counter  = document.querySelector('.page-counter .cur');
+  const totEl    = document.querySelector('.page-counter .tot');
+
+  // Beach reader was hardcoded to a single spread. Cycle through panels in pairs.
+  const TOTAL = Math.max(panels.length, 2);
+  const totalSpreads = Math.ceil(TOTAL / 2);
+  let spread = 0;
+
+  // Set up image elements once; we just swap src on spread change.
+  pageArts.forEach((el) => {
     el.innerHTML = '';
     const img = document.createElement('img');
-    img.src = src;
     img.alt = '';
     img.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;';
     img.onerror = () => { img.style.display = 'none'; };
     el.appendChild(img);
     if (getComputedStyle(el).position === 'static') el.style.position = 'relative';
   });
+
+  // Page order: in RTL spreads, page-art[0] is the LEFT page (chronologically AFTER right).
+  // For our purposes panels[(spread*2 + 1)] sits on the left, panels[spread*2] on the right.
+  const renderSpread = () => {
+    const rIdx = (spread * 2) % panels.length;        // right page (read first in RTL)
+    const lIdx = (spread * 2 + 1) % panels.length;    // left page (read second in RTL)
+    pageArts[0]?.querySelector('img').setAttribute('src', panels[lIdx]);
+    pageArts[1]?.querySelector('img').setAttribute('src', panels[rIdx]);
+
+    const r = (spread * 2) + 1;
+    const l = r + 1;
+    if (pageNums[0]) pageNums[0].textContent = String(l).padStart(2, '0');
+    if (pageNums[1]) pageNums[1].textContent = String(r).padStart(2, '0');
+    if (counter) counter.textContent = `${String(r).padStart(2, '0')}–${String(l).padStart(2, '0')}`;
+    if (totEl) totEl.textContent = String(TOTAL);
+  };
+
+  const next = () => { spread = (spread + 1) % totalSpreads; renderSpread(); };
+  const prev = () => { spread = (spread - 1 + totalSpreads) % totalSpreads; renderSpread(); };
+
+  // Existing decorative edges become real triggers.
+  document.getElementById('next-edge')?.addEventListener('click', next);
+  document.getElementById('prev-edge')?.addEventListener('click', prev);
+
+  // Arrow keys. RTL convention: ArrowLeft advances (next), ArrowRight goes back.
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft')  { next(); }
+    if (e.key === 'ArrowRight') { prev(); }
+  });
+
+  renderSpread();
 
   document.querySelectorAll('.reader-title').forEach((el) => {
     el.textContent = entry.englishTitle || entry.title || id;
